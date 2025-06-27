@@ -2,12 +2,9 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  mode: "development",
   entry: "./src/index.tsx",
   output: {
-    filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "/",
     clean: true,
   },
   resolve: {
@@ -48,14 +45,4 @@ module.exports = {
       template: "./index.html",
     }),
   ],
-  devtool: "inline-source-map",
-  devServer: {
-    static: {
-      directory: path.join(__dirname, "/"), // Use 'static' instead of 'contentBase'
-    },
-    compress: true,
-    port: 9000,
-    open: true, // Automatically open the browser
-    historyApiFallback: true, // Handle client-side routing
-  },
 };
