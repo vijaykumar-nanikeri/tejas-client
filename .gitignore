@@ -1,0 +1,30 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+
+# Dependency directories
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# .env files (for sensitive information like API keys)
+.env
+
+# IDE/editor folders and settings
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+
+# npm package lock file (optional, depends on your needs)
+package-lock.json
+
+# Yarn lock file (optional, if you are using yarn)
+yarn.lock

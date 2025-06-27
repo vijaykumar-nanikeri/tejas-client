@@ -1,0 +1,27 @@
+{
+  "name": "tejas-client",
+  "version": "1.0.0",
+  "description": "Hackathon project developed for AI 4 Andhra Police Hackathon 2025. This application addresses Use-Case 1: AI-enabled analysis of citizen petitions received at PS/SP/CO levels. It intelligently extracts claims from complaints, maps them to relevant evidence types, and supports officers in informed decision-making. The system is designed with scalability, clarity, and practical impact in mind. Future enhancements aim to integrate secure GenAI workflows, real-time feedback mechanisms, and deployment-ready infrastructure — all geared toward enabling efficient policing and building citizen trust.",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --open",
+    "build": "webpack --config webpack.prod.js",
+    "lint": "eslint src/**/*.{js,jsx,ts,tsx}"
+  },
+  "author": "Vijaykumar Nanikeri",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "html-webpack-plugin": "^5.5.3",
+    "mini-css-extract-plugin": "^2.9.2",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  }
+}
