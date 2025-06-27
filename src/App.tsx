@@ -1,11 +1,15 @@
 import React from "react";
 
-const App: React.FC = () => {
-  return (
-    <div>
-      <h1>Hello, React with TypeScript!</h1>
-    </div>
-  );
-};
+// Styles
+import "react-toastify/dist/ReactToastify.css";
+
+import AppProviders from "src/AppProviders";
+import AppRoutes from "src/AppRoutes";
+
+const App: React.FC = () => (
+  <AppProviders>
+    <AppRoutes />
+  </AppProviders>
+);
 
 export default App;
