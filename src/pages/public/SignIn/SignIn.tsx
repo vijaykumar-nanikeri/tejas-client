@@ -1,14 +1,23 @@
 import React, { useState } from "react";
 import {
-  Container,
+  Box,
   TextField,
   Button,
   Typography,
-  Box,
   Stack,
   CircularProgress,
   Alert,
+  InputAdornment,
+  IconButton,
+  Container,
 } from "@mui/material";
+import {
+  Visibility,
+  VisibilityOff,
+  Phone,
+  Lock,
+  Security,
+} from "@mui/icons-material";
 import AxiosClient from "src/services/AxiosClient/AxiosClient";
 import { AUTH_TOKEN_KEY, USER_DATA_KEY } from "src/app-configs/app.config";
 
@@ -35,6 +44,7 @@ function App({ setIsAuthenticated }: Props) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!mobileNo.trim() || !password.trim()) {
@@ -103,55 +113,203 @@ function App({ setIsAuthenticated }: Props) {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <Container maxWidth="sm" style={{ marginTop: "4rem" }}>
-      <Box component="form" noValidate autoComplete="off">
-        <Typography variant="h5" gutterBottom>
-          Sign In
-        </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        <Stack spacing={2}>
-          <TextField
-            label="Mobile Number"
-            variant="outlined"
-            fullWidth
-            value={mobileNo}
-            onChange={(e) => setMobileNo(e.target.value)}
-            onKeyPress={handleKeyPress}
-            disabled={loading}
-            inputProps={{
-              maxLength: 10,
-              pattern: "[0-9]*",
+    <Container
+      maxWidth={false}
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        p: 0,
+        m: 0,
+      }}
+    >
+      {/* Left Section - Branding (60%) - Dark Purple Gradient at Bottom */}
+      <Box
+        sx={{
+          width: "60%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          px: 4,
+          background:
+            "linear-gradient(to bottom, #2c1810 0%, #4a148c 70%, #6a1b9a 100%)",
+        }}
+      >
+        {/* Tejas Logo */}
+        <Box
+          sx={{
+            width: 120,
+            height: 120,
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #ff6b6b, #ee5a24)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mb: 4,
+            boxShadow: 3,
+          }}
+        >
+          <Security
+            sx={{
+              fontSize: 60,
+              color: "white",
             }}
           />
-          <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            fullWidth
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyPress={handleKeyPress}
-            disabled={loading}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleLogin}
-            disabled={!mobileNo.trim() || !password.trim() || loading}
-            startIcon={
-              loading ? <CircularProgress size={20} color="inherit" /> : null
-            }
-          >
-            {loading ? "Signing In..." : "Sign In"}
-          </Button>
-        </Stack>
+        </Box>
+
+        {/* Tagline */}
+        <Typography
+          variant="h2"
+          sx={{
+            fontWeight: 700,
+            color: "white",
+            textAlign: "center",
+            mb: 2,
+            textShadow: 1,
+          }}
+        >
+          TEJAS
+        </Typography>
+
+        <Typography
+          variant="h5"
+          sx={{
+            color: "rgba(255,255,255,0.9)",
+            textAlign: "center",
+            mb: 3,
+            fontWeight: 300,
+            maxWidth: 600,
+            lineHeight: 1.4,
+          }}
+        >
+          Triage of Evidence and Justification Automation System
+        </Typography>
+
+        {/* Subtitle */}
+        <Typography
+          variant="body1"
+          sx={{
+            color: "rgba(255,255,255,0.7)",
+            textAlign: "center",
+            fontWeight: 300,
+          }}
+        >
+          Empowering Law Enforcement with AI-Driven Intelligence
+        </Typography>
+      </Box>
+
+      {/* Right Section - Sign In Form (40%) - Better Contrast Background */}
+      <Box
+        sx={{
+          width: "40%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          px: 4,
+          bgcolor: "#f8fafc",
+        }}
+      >
+        <Box sx={{ width: "100%", maxWidth: 400 }}>
+          <Box sx={{ textAlign: "center", mb: 4 }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 600,
+                mb: 1,
+                color: "text.primary",
+              }}
+            >
+              SignIn
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              for duty
+            </Typography>
+          </Box>
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
+
+          <Stack spacing={3}>
+            <TextField
+              label="Mobile Number"
+              variant="outlined"
+              fullWidth
+              value={mobileNo}
+              onChange={(e) => setMobileNo(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={loading}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Phone color="action" />
+                  </InputAdornment>
+                ),
+              }}
+              inputProps={{
+                maxLength: 10,
+                pattern: "[0-9]*",
+              }}
+            />
+
+            <TextField
+              label="Password"
+              variant="outlined"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={loading}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock color="action" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <Button
+              variant="contained"
+              size="large"
+              onClick={handleLogin}
+              disabled={!mobileNo.trim() || !password.trim() || loading}
+              startIcon={
+                loading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <Security />
+                )
+              }
+              sx={{
+                py: 1.5,
+                fontWeight: 600,
+                textTransform: "none",
+                bgcolor: "primary.main",
+                "&:hover": {
+                  bgcolor: "primary.dark",
+                },
+              }}
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </Button>
+          </Stack>
+        </Box>
       </Box>
     </Container>
   );
