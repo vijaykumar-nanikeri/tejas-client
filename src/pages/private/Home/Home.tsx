@@ -1,5 +1,6 @@
 import { Button, Typography, Box, Container } from "@mui/material";
 import React from "react";
+import { AUTH_TOKEN_KEY, USER_DATA_KEY } from "src/app-configs/app.config";
 
 type Props = {
   isAuthenticated: boolean;
@@ -8,7 +9,8 @@ type Props = {
 
 const Home = ({ setIsAuthenticated }: Props) => {
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(USER_DATA_KEY);
     // Update authentication state immediately
     setIsAuthenticated(false);
     // Dispatch custom event for cross-tab logout detection

@@ -6,6 +6,7 @@ import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { AUTH_TOKEN_KEY, USER_DATA_KEY } from "src/app-configs/app.config";
 
 type Props = {
   setIsAuthenticated: (value: boolean) => void;
@@ -25,7 +26,8 @@ function ResponsiveAppBar({ setIsAuthenticated }: Props) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(USER_DATA_KEY);
     setIsAuthenticated(false);
     window.dispatchEvent(new Event("tokenChanged"));
     handleCloseUserMenu();

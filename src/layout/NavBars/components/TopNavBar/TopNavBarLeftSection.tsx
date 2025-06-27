@@ -25,7 +25,7 @@ function TopNavBarLeftSection() {
           textDecoration: "none",
         }}
       >
-        LOGO
+        Tejas
       </Typography>
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         {pages.map((page) => (

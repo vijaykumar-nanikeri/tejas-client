@@ -11,10 +11,11 @@ const PublicRouteWrapper = lazy(
   () => import("src/routing/PublicRoute/PublicRouteWrapper")
 );
 import { WebPaths } from "./routing/routes";
+import { AUTH_TOKEN_KEY } from "src/app-configs/app.config";
 
 const AppRoutes = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    () => !!localStorage.getItem("token")
+    () => !!localStorage.getItem(AUTH_TOKEN_KEY)
   );
 
   // Debug authentication state changes
@@ -24,12 +25,12 @@ const AppRoutes = () => {
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
       setIsAuthenticated(!!token);
     };
 
     const handleCustomEvent = () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
       setIsAuthenticated(!!token);
     };
 
