@@ -19,25 +19,46 @@ const PetitionQuality: React.FC<PetitionQualityProps> = ({
 }) => {
   return (
     <Box sx={petitionQualityStyles.container}>
-      {onBack && (
-        <Box sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        {onBack && (
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={onBack}
             variant="outlined"
-            sx={{ textTransform: "capitalize" }}
+            sx={{
+              textTransform: "capitalize",
+              position: "absolute",
+              left: 0,
+              zIndex: 1,
+            }}
           >
             Back to Petition
           </Button>
-        </Box>
-      )}
+        )}
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            textAlign: "center",
+            fontWeight: 600,
+            color: "primary.main",
+            fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+            letterSpacing: 0.5,
+          }}
+        >
+          Evidences Quality Review
+        </Typography>
+      </Box>
 
       <Card sx={petitionQualityStyles.card}>
         <CardContent sx={petitionQualityStyles.cardContent}>
-          <Typography variant="h5" sx={petitionQualityStyles.title}>
-            Evidences Quality Review
-          </Typography>
-
           {claimsData.map((claim, index) => (
             <ClaimSection
               key={claim.claimNo}

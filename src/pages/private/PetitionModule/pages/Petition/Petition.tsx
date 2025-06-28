@@ -39,10 +39,10 @@ const Petition: React.FC = () => {
         return <PetitionSummaryStatus onBack={handleBackToQuality} />;
       default:
         return (
-          <>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <FileSelection />
             <EvidenceChecklist onShowQualityReview={handleShowQualityReview} />
-          </>
+          </Box>
         );
     }
   };

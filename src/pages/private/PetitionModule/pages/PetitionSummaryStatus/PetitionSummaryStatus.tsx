@@ -68,22 +68,43 @@ const PetitionSummaryStatus: React.FC<PetitionSummaryStatusProps> = ({
 
   return (
     <Box sx={petitionSummaryStyles.container}>
-      {onBack && (
-        <Box sx={petitionSummaryStyles.backButtonContainer}>
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        {onBack && (
           <Button
             startIcon={<ArrowBackIcon />}
             onClick={onBack}
             variant="outlined"
-            sx={petitionSummaryStyles.backButton}
+            sx={{
+              textTransform: "capitalize",
+              position: "absolute",
+              left: 0,
+              zIndex: 1,
+            }}
           >
             Back to Quality Review
           </Button>
-        </Box>
-      )}
-
-      <Typography variant="h5" sx={petitionSummaryStyles.title}>
-        Petition Summary & Status
-      </Typography>
+        )}
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            textAlign: "center",
+            fontWeight: 600,
+            color: "primary.main",
+            fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+            letterSpacing: 0.5,
+          }}
+        >
+          Petition Summary & Status
+        </Typography>
+      </Box>
 
       <Box sx={petitionSummaryStyles.claimsContainer}>
         {claimsData.map((claim) => (

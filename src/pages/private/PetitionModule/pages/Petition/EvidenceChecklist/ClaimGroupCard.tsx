@@ -55,7 +55,7 @@ export default function ClaimGroupCard({
         }}
       >
         <Typography
-          variant="h5"
+          variant="h6"
           sx={{
             fontWeight: 600,
             mb: 3,
@@ -63,14 +63,11 @@ export default function ClaimGroupCard({
             color: "primary.main",
             fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
             letterSpacing: 0.5,
-            borderBottom: "2px solid",
-            borderColor: "primary.main",
-            pb: 2,
           }}
         >
           Claims & Checklist - Action Items
         </Typography>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           {fields.map((field, idx) => (
             // @ts-ignore
             <Grid item xs={12} sm={6} xl={4} key={field.id}>
@@ -78,7 +75,14 @@ export default function ClaimGroupCard({
             </Grid>
           ))}
         </Grid>
-        <Box sx={{ mt: 2, textAlign: "left" }}>
+        <Box sx={{ mt: 3, textAlign: "right" }}>
+          <Box
+            sx={{
+              borderTop: "1px solid",
+              borderColor: "divider",
+              mb: 2,
+            }}
+          />
           <Button
             onClick={handleSubmitClick}
             variant="contained"

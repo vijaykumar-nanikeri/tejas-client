@@ -6,6 +6,11 @@ export const petitionStyles = {
     height: "100%",
   } as SxProps<Theme>,
 
+  sectionTitle: {
+    mb: 2,
+    fontWeight: 600,
+  } as SxProps<Theme>,
+
   card: {
     height: "100%",
   } as SxProps<Theme>,
