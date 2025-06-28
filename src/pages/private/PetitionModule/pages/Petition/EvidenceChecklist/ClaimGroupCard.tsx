@@ -70,7 +70,7 @@ export default function ClaimGroupCard({
         <Grid container spacing={2}>
           {fields.map((field, idx) => (
             // @ts-ignore
-            <Grid item xs={12} sm={6} xl={4} key={field.id}>
+            <Grid item xs={12} md={4} key={field.id}>
               <ClaimChecklistCard claimIndex={idx} />
             </Grid>
           ))}
