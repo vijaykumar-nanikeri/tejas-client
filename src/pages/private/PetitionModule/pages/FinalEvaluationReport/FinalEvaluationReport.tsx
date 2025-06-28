@@ -3,6 +3,8 @@ import { Box } from "@mui/material";
 import Header from "./Header";
 import PetitionerDetails from "./components/PetitionerDetails";
 import IncidentDetails from "./components/IncidentDetails";
+import VictimDetails from "./components/VictimDetails";
+import AccusedDetails from "./components/AccusedDetails";
 import { finalEvaluationData } from "./data/finalEvaluationData";
 
 interface FinalEvaluationReportProps {
@@ -23,6 +25,8 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
       priorityLevel || finalEvaluationData.petitionDetails.priorityLevel,
     petitionerDetails: finalEvaluationData.petitionerDetails,
     incidentDetails: finalEvaluationData.incidentDetails,
+    victimDetails: finalEvaluationData.victimDetails,
+    accusedDetails: finalEvaluationData.accusedDetails,
   };
 
   return (
@@ -43,6 +47,16 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
       {/* Incident Details Section */}
       <Box sx={{ mb: 3 }}>
         <IncidentDetails incidentDetails={data.incidentDetails} />
+      </Box>
+
+      {/* Victim Details Section */}
+      <Box sx={{ mb: 3 }}>
+        <VictimDetails victimDetails={data.victimDetails} />
+      </Box>
+
+      {/* Accused Details Section */}
+      <Box sx={{ mb: 3 }}>
+        <AccusedDetails accusedDetails={data.accusedDetails} />
       </Box>
     </Box>
   );

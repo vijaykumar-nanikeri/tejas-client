@@ -11,6 +11,20 @@ export interface IncidentDetails {
   place: string;
 }
 
+export interface VictimDetails {
+  name: string;
+  fatherName: string;
+  address: string;
+  phoneNo: string;
+}
+
+export interface AccusedDetails {
+  name: string;
+  fatherName: string;
+  address: string;
+  phoneNo: string;
+}
+
 export interface PetitionDetails {
   petitionId: string;
   priorityLevel: "High" | "Medium" | "Low";
@@ -22,6 +36,8 @@ export interface FinalEvaluationData {
   petitionDetails: PetitionDetails;
   petitionerDetails: PetitionerDetails;
   incidentDetails: IncidentDetails;
+  victimDetails: VictimDetails;
+  accusedDetails: AccusedDetails;
 }
 
 export const finalEvaluationData: FinalEvaluationData = {
@@ -41,5 +57,17 @@ export const finalEvaluationData: FinalEvaluationData = {
     date: "2024-01-10",
     time: "14:30",
     place: "Central Market, Connaught Place, New Delhi",
+  },
+  victimDetails: {
+    name: "Priya Sharma",
+    fatherName: "Rajesh Kumar Sharma",
+    address: "House No. 45, Sector 12, Gandhi Nagar, New Delhi - 110031",
+    phoneNo: "+91-98765-43211",
+  },
+  accusedDetails: {
+    name: "Amit Kumar Singh",
+    fatherName: "Ramesh Kumar Singh",
+    address: "Flat No. 23, Building A, Green Park, New Delhi - 110016",
+    phoneNo: "+91-98765-43212",
   },
 };
