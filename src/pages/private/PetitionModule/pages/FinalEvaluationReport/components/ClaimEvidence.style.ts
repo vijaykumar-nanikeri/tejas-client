@@ -7,7 +7,7 @@ export const claimEvidenceStyles = {
   sectionTitle: {
     fontWeight: 600,
     color: "text.primary",
-    mb: 2,
+    mb: 1,
     fontSize: "0.95rem",
   },
   titleIcon: {
@@ -23,7 +23,7 @@ export const claimEvidenceStyles = {
     boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
   },
   table: {
-    minWidth: 650,
+    width: "100%",
     "& .MuiTableCell-root": {
       borderBottom: "1px solid",
       borderColor: "divider",
@@ -73,20 +73,23 @@ export const claimEvidenceStyles = {
     fontSize: "0.8rem",
     lineHeight: 1.4,
   },
-  noDataRow: {
-    "& .MuiTableCell-root": {
-      borderBottom: "none",
-      padding: "40px 16px",
-    },
-  },
-  noDataCell: {
-    textAlign: "center",
-    color: "text.secondary",
-    fontSize: "0.9rem",
+  noDataContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     gap: 1,
+    padding: "16px",
+    backgroundColor: "background.paper",
+    border: "1px solid",
+    borderColor: "divider",
+    borderRadius: 2,
+    marginTop: "8px",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+  },
+  noDataText: {
+    color: "text.secondary",
+    fontSize: "0.9rem",
+    fontWeight: 500,
   },
   noDataIcon: {
     fontSize: "1.2rem",

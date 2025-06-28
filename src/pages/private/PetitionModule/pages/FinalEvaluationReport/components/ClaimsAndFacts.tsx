@@ -45,35 +45,35 @@ const ClaimsAndFacts: React.FC<ClaimsAndFactsProps> = ({ claimsAndFacts }) => {
               </TableRow>
             </TableHead>
             <TableBody sx={claimsAndFactsStyles.tableBody}>
-              {claimsAndFacts.length === 0 ? (
-                <TableRow sx={claimsAndFactsStyles.noDataRow}>
-                  <TableCell colSpan={4} sx={claimsAndFactsStyles.noDataCell}>
-                    <InboxIcon sx={claimsAndFactsStyles.noDataIcon} />
-                    No data found.
+              {claimsAndFacts.map((claim) => (
+                <TableRow key={claim.id}>
+                  <TableCell sx={claimsAndFactsStyles.serialNumberCell}>
+                    {claim.id}
+                  </TableCell>
+                  <TableCell sx={claimsAndFactsStyles.dateCell}>
+                    {formatDate(claim.date)}
+                  </TableCell>
+                  <TableCell sx={claimsAndFactsStyles.claimCell}>
+                    {claim.claimDescription}
+                  </TableCell>
+                  <TableCell sx={claimsAndFactsStyles.factsCell}>
+                    {claim.supportingFacts}
                   </TableCell>
                 </TableRow>
-              ) : (
-                claimsAndFacts.map((claim) => (
-                  <TableRow key={claim.id}>
-                    <TableCell sx={claimsAndFactsStyles.serialNumberCell}>
-                      {claim.id}
-                    </TableCell>
-                    <TableCell sx={claimsAndFactsStyles.dateCell}>
-                      {formatDate(claim.date)}
-                    </TableCell>
-                    <TableCell sx={claimsAndFactsStyles.claimCell}>
-                      {claim.claimDescription}
-                    </TableCell>
-                    <TableCell sx={claimsAndFactsStyles.factsCell}>
-                      {claim.supportingFacts}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Box>
+
+      {claimsAndFacts.length === 0 && (
+        <Box sx={claimsAndFactsStyles.noDataContainer}>
+          <InboxIcon sx={claimsAndFactsStyles.noDataIcon} />
+          <Typography sx={claimsAndFactsStyles.noDataText}>
+            No data found.
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 };

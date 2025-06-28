@@ -41,47 +41,47 @@ const ClaimEvidence: React.FC<ClaimEvidenceProps> = ({ claimEvidence }) => {
               </TableRow>
             </TableHead>
             <TableBody sx={claimEvidenceStyles.tableBody}>
-              {claimEvidence.length === 0 ? (
-                <TableRow sx={claimEvidenceStyles.noDataRow}>
-                  <TableCell colSpan={5} sx={claimEvidenceStyles.noDataCell}>
-                    <InboxIcon sx={claimEvidenceStyles.noDataIcon} />
-                    No data found.
+              {claimEvidence.map((evidence) => (
+                <TableRow key={evidence.id}>
+                  <TableCell sx={claimEvidenceStyles.serialNumberCell}>
+                    {evidence.id}
+                  </TableCell>
+                  <TableCell sx={claimEvidenceStyles.claimCell}>
+                    {evidence.claimDescription}
+                  </TableCell>
+                  <TableCell sx={claimEvidenceStyles.evidenceCell}>
+                    <Chip
+                      label={evidence.evidenceSubmitted ? "Yes" : "No"}
+                      color={evidence.evidenceSubmitted ? "success" : "error"}
+                      size="small"
+                      variant="outlined"
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: "0.75rem",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell sx={claimEvidenceStyles.documentCell}>
+                    {evidence.documentProofDescription}
+                  </TableCell>
+                  <TableCell sx={claimEvidenceStyles.summaryCell}>
+                    {evidence.factCheckedAISummary}
                   </TableCell>
                 </TableRow>
-              ) : (
-                claimEvidence.map((evidence) => (
-                  <TableRow key={evidence.id}>
-                    <TableCell sx={claimEvidenceStyles.serialNumberCell}>
-                      {evidence.id}
-                    </TableCell>
-                    <TableCell sx={claimEvidenceStyles.claimCell}>
-                      {evidence.claimDescription}
-                    </TableCell>
-                    <TableCell sx={claimEvidenceStyles.evidenceCell}>
-                      <Chip
-                        label={evidence.evidenceSubmitted ? "Yes" : "No"}
-                        color={evidence.evidenceSubmitted ? "success" : "error"}
-                        size="small"
-                        variant="outlined"
-                        sx={{
-                          fontWeight: 600,
-                          fontSize: "0.75rem",
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell sx={claimEvidenceStyles.documentCell}>
-                      {evidence.documentProofDescription}
-                    </TableCell>
-                    <TableCell sx={claimEvidenceStyles.summaryCell}>
-                      {evidence.factCheckedAISummary}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Box>
+
+      {claimEvidence.length === 0 && (
+        <Box sx={claimEvidenceStyles.noDataContainer}>
+          <InboxIcon sx={claimEvidenceStyles.noDataIcon} />
+          <Typography sx={claimEvidenceStyles.noDataText}>
+            No data found.
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 };
