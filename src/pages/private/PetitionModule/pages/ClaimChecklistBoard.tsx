@@ -3,7 +3,13 @@ import { Box } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 import ClaimGroupCard from "./ClaimGroupCard";
 
-export default function ClaimChecklistBoard() {
+interface ClaimChecklistBoardProps {
+  onShowQualityReview: () => void;
+}
+
+export default function ClaimChecklistBoard({
+  onShowQualityReview,
+}: ClaimChecklistBoardProps) {
   const methods = useFormContext();
 
   return (
@@ -14,7 +20,7 @@ export default function ClaimChecklistBoard() {
         })}
         style={{ width: "100%" }}
       >
-        <ClaimGroupCard />
+        <ClaimGroupCard onShowQualityReview={onShowQualityReview} />
       </form>
     </Box>
   );

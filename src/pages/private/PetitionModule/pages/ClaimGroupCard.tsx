@@ -13,7 +13,13 @@ import {
 import { useFormContext, useFieldArray } from "react-hook-form";
 import ClaimChecklistCard from "./ClaimChecklistCard";
 
-export default function ClaimGroupCard() {
+interface ClaimGroupCardProps {
+  onShowQualityReview: () => void;
+}
+
+export default function ClaimGroupCard({
+  onShowQualityReview,
+}: ClaimGroupCardProps) {
   const { control, handleSubmit } = useFormContext();
   const { fields } = useFieldArray({ control, name: "claims" });
   const [openDialog, setOpenDialog] = useState(false);
@@ -27,7 +33,8 @@ export default function ClaimGroupCard() {
     // Proceed with the actual submit action
     handleSubmit((data) => {
       console.log("Form Data:", data);
-      // Add your submit logic here
+      // Show evidence quality review
+      onShowQualityReview();
     })();
   };
 

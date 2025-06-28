@@ -12,7 +12,13 @@ interface EvidenceChecklistFormData {
   }>;
 }
 
-const EvidenceChecklist: React.FC = () => {
+interface EvidenceChecklistProps {
+  onShowQualityReview: () => void;
+}
+
+const EvidenceChecklist: React.FC<EvidenceChecklistProps> = ({
+  onShowQualityReview,
+}) => {
   // Separate form for evidence checklist
   const evidenceFormMethods = useForm<EvidenceChecklistFormData>({
     defaultValues: {
@@ -44,7 +50,7 @@ const EvidenceChecklist: React.FC = () => {
   return (
     <Box sx={{ width: "100%" }}>
       <FormProvider {...evidenceFormMethods}>
-        <ClaimChecklistBoard />
+        <ClaimChecklistBoard onShowQualityReview={onShowQualityReview} />
       </FormProvider>
     </Box>
   );
