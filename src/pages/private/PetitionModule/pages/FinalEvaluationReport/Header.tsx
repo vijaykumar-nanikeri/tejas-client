@@ -8,7 +8,6 @@ import {
   KeyboardArrowDown as PriorityLowIcon,
   Print as PrintIcon,
 } from "@mui/icons-material";
-import { headerStyles } from "./Header.style";
 
 interface HeaderProps {
   onBack?: () => void;

@@ -5,6 +5,7 @@ import PetitionerDetails from "./components/PetitionerDetails";
 import IncidentDetails from "./components/IncidentDetails";
 import VictimDetails from "./components/VictimDetails";
 import AccusedDetails from "./components/AccusedDetails";
+import BriefFactsSummary from "./components/BriefFactsSummary";
 import { finalEvaluationData } from "./data/finalEvaluationData";
 
 interface FinalEvaluationReportProps {
@@ -27,6 +28,7 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
     incidentDetails: finalEvaluationData.incidentDetails,
     victimDetails: finalEvaluationData.victimDetails,
     accusedDetails: finalEvaluationData.accusedDetails,
+    briefFactsSummary: finalEvaluationData.briefFactsSummary,
   };
 
   return (
@@ -57,6 +59,11 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
       {/* Accused Details Section */}
       <Box sx={{ mb: 3 }}>
         <AccusedDetails accusedDetails={data.accusedDetails} />
+      </Box>
+
+      {/* Brief Facts Summary Section */}
+      <Box sx={{ mb: 3 }}>
+        <BriefFactsSummary briefFactsSummary={data.briefFactsSummary} />
       </Box>
     </Box>
   );

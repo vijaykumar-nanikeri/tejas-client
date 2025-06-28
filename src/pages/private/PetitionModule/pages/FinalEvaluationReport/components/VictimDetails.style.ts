@@ -13,7 +13,7 @@ export const victimDetailsStyles = {
     fontWeight: 600,
     color: "text.primary",
     mb: 2,
-    fontSize: "1.1rem",
+    fontSize: "0.95rem",
   },
   detailContainer: {
     display: "flex",
