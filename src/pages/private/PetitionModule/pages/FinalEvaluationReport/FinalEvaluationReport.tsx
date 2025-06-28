@@ -6,6 +6,7 @@ import IncidentDetails from "./components/IncidentDetails";
 import VictimDetails from "./components/VictimDetails";
 import AccusedDetails from "./components/AccusedDetails";
 import BriefFactsSummary from "./components/BriefFactsSummary";
+import EnquiryReportSummary from "./components/EnquiryReportSummary";
 import ClaimsAndFacts from "./components/ClaimsAndFacts";
 import ClaimEvidence from "./components/ClaimEvidence";
 import { finalEvaluationData } from "./data/finalEvaluationData";
@@ -31,6 +32,7 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
     victimDetails: finalEvaluationData.victimDetails,
     accusedDetails: finalEvaluationData.accusedDetails,
     briefFactsSummary: finalEvaluationData.briefFactsSummary,
+    enquiryReportSummary: finalEvaluationData.enquiryReportSummary,
     claimsAndFacts: finalEvaluationData.claimsAndFacts,
     claimEvidence: finalEvaluationData.claimEvidence,
   };
@@ -78,6 +80,11 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
       {/* Claim Evidence Section */}
       <Box sx={{ mb: 3 }}>
         <ClaimEvidence claimEvidence={data.claimEvidence} />
+      </Box>
+
+      {/* Enquiry Report Summary Section */}
+      <Box sx={{ mb: 3 }}>
+        <EnquiryReportSummary content={data.enquiryReportSummary.summary} />
       </Box>
     </Box>
   );
