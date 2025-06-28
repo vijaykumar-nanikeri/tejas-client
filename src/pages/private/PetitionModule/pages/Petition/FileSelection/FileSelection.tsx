@@ -116,7 +116,7 @@ const FileSelection: React.FC<FileSelectionProps> = ({
           },
         });
 
-        console.log("API Response:", response.data);
+        setValue("description", response.data.message);
       } catch (error) {
         console.error("Error processing file:", error);
         // Handle error - you might want to show a notification to user
