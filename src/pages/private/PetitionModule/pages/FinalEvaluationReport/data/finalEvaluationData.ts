@@ -48,6 +48,18 @@ export interface EnquiryReportSummary {
   summary: string;
 }
 
+export interface Remarks {
+  content: string;
+}
+
+export interface ActionDetailsByIO {
+  content: string;
+}
+
+export interface SystemRecommendations {
+  content: string;
+}
+
 export interface PetitionDetails {
   petitionId: string;
   priorityLevel: "High" | "Medium" | "Low";
@@ -63,6 +75,9 @@ export interface FinalEvaluationData {
   accusedDetails: AccusedDetails;
   briefFactsSummary: BriefFactsSummary;
   enquiryReportSummary: EnquiryReportSummary;
+  remarks: Remarks;
+  actionDetailsByIO: ActionDetailsByIO;
+  systemRecommendations: SystemRecommendations;
   claimsAndFacts: ClaimAndFacts[];
   claimEvidence: ClaimEvidence[];
 }
@@ -104,6 +119,18 @@ export const finalEvaluationData: FinalEvaluationData = {
   enquiryReportSummary: {
     summary:
       "Based on the evidence and officer inputs, the petition appears to be True with the core claims being substantiated. The accused has evaded during investigation. Officer actions such as counseling, arrests, notices, and further inquiries were carried out. The submitted documents include CCTV footage, medical reports, witness affidavits, and photographic evidence which collectively support the petition's grounds. The investigation revealed multiple eyewitness accounts corroborating the petitioner's version of events, and the medical examination confirmed physical injuries consistent with the alleged assault. The accused was served multiple notices but failed to cooperate with the investigation process.",
+  },
+  remarks: {
+    content:
+      "Sample remarks. This section contains additional observations and notes about the case that may not fit into other categories. These remarks provide context and insights that could be relevant for the final evaluation and decision-making process.",
+  },
+  actionDetailsByIO: {
+    content:
+      "Sample remarks. The Investigating Officer has taken several actions including serving notices to the accused, conducting field investigations, collecting witness statements, and gathering documentary evidence. The IO has also coordinated with medical authorities for injury assessment and with technical teams for digital evidence analysis.",
+  },
+  systemRecommendations: {
+    content:
+      "Sample remarks. Based on the AI analysis and evaluation of all submitted evidence, the system recommends proceeding with the case as the claims appear substantiated. Further investigation may be required to strengthen certain aspects of the case, particularly regarding the verbal abuse allegations.",
   },
   claimsAndFacts: [
     {

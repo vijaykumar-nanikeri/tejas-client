@@ -7,6 +7,9 @@ import VictimDetails from "./components/VictimDetails";
 import AccusedDetails from "./components/AccusedDetails";
 import BriefFactsSummary from "./components/BriefFactsSummary";
 import EnquiryReportSummary from "./components/EnquiryReportSummary";
+import Remarks from "./components/Remarks";
+import ActionDetailsByIO from "./components/ActionDetailsByIO";
+import SystemRecommendations from "./components/SystemRecommendations";
 import ClaimsAndFacts from "./components/ClaimsAndFacts";
 import ClaimEvidence from "./components/ClaimEvidence";
 import { finalEvaluationData } from "./data/finalEvaluationData";
@@ -33,6 +36,9 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
     accusedDetails: finalEvaluationData.accusedDetails,
     briefFactsSummary: finalEvaluationData.briefFactsSummary,
     enquiryReportSummary: finalEvaluationData.enquiryReportSummary,
+    remarks: finalEvaluationData.remarks,
+    actionDetailsByIO: finalEvaluationData.actionDetailsByIO,
+    systemRecommendations: finalEvaluationData.systemRecommendations,
     claimsAndFacts: finalEvaluationData.claimsAndFacts,
     claimEvidence: finalEvaluationData.claimEvidence,
   };
@@ -85,6 +91,21 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
       {/* Enquiry Report Summary Section */}
       <Box sx={{ mb: 3 }}>
         <EnquiryReportSummary content={data.enquiryReportSummary.summary} />
+      </Box>
+
+      {/* Remarks Section */}
+      <Box sx={{ mb: 3 }}>
+        <Remarks content={data.remarks.content} />
+      </Box>
+
+      {/* Action Details by IO Section */}
+      <Box sx={{ mb: 3 }}>
+        <ActionDetailsByIO content={data.actionDetailsByIO.content} />
+      </Box>
+
+      {/* System Recommendations Section */}
+      <Box sx={{ mb: 3 }}>
+        <SystemRecommendations content={data.systemRecommendations.content} />
       </Box>
     </Box>
   );
