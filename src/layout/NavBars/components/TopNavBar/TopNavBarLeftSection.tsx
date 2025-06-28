@@ -1,14 +1,14 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+// import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
+// import Avatar from "@mui/material/Avatar";
 import { useNavigate } from "react-router-dom";
 import { WebPaths } from "src/routing/routes";
-import logoImage from "images/logo.png";
+import logoImage from "images/logo.svg";
 
 const pages = [
-  { name: "Home", path: WebPaths.Home },
+  // { name: "Home", path: WebPaths.Home },
   { name: "Petition", path: WebPaths.Petition },
 ];
 
@@ -28,7 +28,17 @@ function TopNavBarLeftSection() {
           mr: 3,
         }}
       >
-        <Avatar
+        <img
+          src={logoImage}
+          alt="TEJAS Logo"
+          style={{
+            width: 125,
+            height: 50,
+            objectFit: "contain",
+            padding: "4px",
+          }}
+        />
+        {/* <Avatar
           sx={{
             mr: 2,
             bgcolor: "rgba(255, 255, 255, 0.2)",
@@ -59,7 +69,7 @@ function TopNavBarLeftSection() {
           }}
         >
           TEJAS
-        </Typography>
+        </Typography> */}
       </Box>
 
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>

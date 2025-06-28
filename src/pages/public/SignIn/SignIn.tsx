@@ -18,7 +18,7 @@ import { Visibility, VisibilityOff, Phone, Lock } from "@mui/icons-material";
 import AxiosClient from "src/services/AxiosClient/AxiosClient";
 import { AUTH_TOKEN_KEY, USER_DATA_KEY } from "src/app-configs/app.config";
 import { signInStyles } from "./SignIn.style";
-import logoImage from "images/logo.png";
+import logoImage from "images/logo.svg";
 
 // TypeScript interfaces
 interface SignInFormData {
@@ -162,8 +162,8 @@ const SignIn: React.FC<SignInProps> = ({ setIsAuthenticated }) => {
               src={logoImage}
               alt="Tejas Logo"
               style={{
-                width: "80px",
-                height: "80px",
+                width: 450,
+                height: 200,
                 filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.3))",
                 marginBottom: "16px",
               }}
@@ -171,18 +171,18 @@ const SignIn: React.FC<SignInProps> = ({ setIsAuthenticated }) => {
           </Box>
 
           {/* Tagline */}
-          <Typography variant="h2" sx={signInStyles.title}>
+          {/* <Typography variant="h2" sx={signInStyles.title}>
             TEJAS
           </Typography>
 
           <Typography variant="h5" sx={signInStyles.tagline}>
             Triage of Evidence and Justification Automation System
-          </Typography>
+          </Typography> */}
 
           {/* Subtitle */}
-          <Typography variant="body1" sx={signInStyles.tagline}>
+          {/* <Typography variant="body1" sx={signInStyles.tagline}>
             Empowering Law Enforcement with AI-Driven Intelligence
-          </Typography>
+          </Typography> */}
         </Box>
 
         {/* Right Section - Sign In Form (40%) */}

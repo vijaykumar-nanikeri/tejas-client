@@ -8,7 +8,7 @@ import {
   KeyboardArrowDown as PriorityLowIcon,
   Print as PrintIcon,
 } from "@mui/icons-material";
-import logoImage from "images/logo.png";
+import logoImage from "images/logo.svg";
 
 interface HeaderProps {
   onBack?: () => void;
