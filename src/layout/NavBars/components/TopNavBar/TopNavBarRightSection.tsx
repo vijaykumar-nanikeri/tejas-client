@@ -6,6 +6,7 @@ import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
 import { AUTH_TOKEN_KEY, USER_DATA_KEY } from "src/app-configs/app.config";
 
 type Props = {
@@ -43,9 +44,11 @@ function ResponsiveAppBar({ setIsAuthenticated }: Props) {
 
   return (
     <Box sx={{ flexGrow: 0 }}>
-      <Tooltip title="Open settings">
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="Remy Sharp" />
+      <Tooltip title="User Settings">
+        <IconButton onClick={handleOpenUserMenu}>
+          <Avatar sx={{ bgcolor: "rgba(255, 255, 255, 0.2)", color: "white" }}>
+            U
+          </Avatar>
         </IconButton>
       </Tooltip>
       <Menu
@@ -64,11 +67,20 @@ function ResponsiveAppBar({ setIsAuthenticated }: Props) {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {["Profile", "Account", "Dashboard", "Logout"].map((setting) => (
-          <MenuItem key={setting} onClick={() => handleMenuClick(setting)}>
-            <Typography sx={{ textAlign: "center" }}>{setting}</Typography>
-          </MenuItem>
-        ))}
+        <MenuItem onClick={() => handleMenuClick("Profile")}>
+          <Typography>Profile</Typography>
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuClick("Account")}>
+          <Typography>Account Settings</Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => handleMenuClick("Dashboard")}>
+          <Typography>Dashboard</Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => handleMenuClick("Logout")}>
+          <Typography color="error">Logout</Typography>
+        </MenuItem>
       </Menu>
     </Box>
   );

@@ -1,38 +1,39 @@
 import React from "react";
-
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import { makeStyles } from "@mui/styles";
+import Box from "@mui/material/Box";
 
 import TopNavBarLeftSection from "./TopNavBarLeftSection";
 import TopNavBarRightSection from "./TopNavBarRightSection";
-
-type StyleProps = {
-  background?: string;
-};
 
 type Props = {
   background?: string;
   setIsAuthenticated: (value: boolean) => void;
 };
 
-const useStyles = makeStyles<StyleProps>(() => ({
-  root: (props: StyleProps) => ({
-    backgroundColor: props.background,
-    borderBottom: "1px solid #dddddd",
-    // Overriding default value of zIndex which was 1100, as the same zIndex value is assigned for Sub-TopNavBar.
-    zIndex: 1110,
-  }),
-}));
-
-const TopNavBar: React.FC<Props> = ({ background, setIsAuthenticated }) => {
-  const classes = useStyles({ background });
-
+const TopNavBar: React.FC<Props> = ({ setIsAuthenticated }) => {
   return (
-    <AppBar className={classes.root} elevation={0} data-testid="topNavBar">
+    <AppBar
+      elevation={1}
+      data-testid="topNavBar"
+      sx={{
+        background: "linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%)",
+        zIndex: 1110,
+      }}
+    >
       <Toolbar variant="dense" disableGutters>
-        <TopNavBarLeftSection />
-        <TopNavBarRightSection setIsAuthenticated={setIsAuthenticated} />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            px: 3,
+          }}
+        >
+          <TopNavBarLeftSection />
+          <TopNavBarRightSection setIsAuthenticated={setIsAuthenticated} />
+        </Box>
       </Toolbar>
     </AppBar>
   );

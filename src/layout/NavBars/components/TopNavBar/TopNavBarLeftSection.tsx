@@ -2,34 +2,56 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import AdbIcon from "@mui/icons-material/Adb";
+import Avatar from "@mui/material/Avatar";
+import Security from "@mui/icons-material/Security";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Dashboard", "Cases", "Reports", "Analytics"];
 
 function TopNavBarLeftSection() {
   return (
     <>
-      <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-      <Typography
-        variant="h6"
-        noWrap
-        component="a"
-        href="#app-bar-with-responsive-menu"
+      <Box
         sx={{
-          mr: 2,
-          display: { xs: "none", md: "flex" },
-          fontFamily: "monospace",
-          fontWeight: 700,
-          letterSpacing: ".3rem",
-          color: "inherit",
-          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          mr: 3,
         }}
       >
-        Tejas
-      </Typography>
+        <Avatar
+          sx={{
+            mr: 2,
+            bgcolor: "rgba(255, 255, 255, 0.2)",
+          }}
+        >
+          <Security sx={{ color: "white" }} />
+        </Avatar>
+        <Typography
+          variant="h6"
+          noWrap
+          component="a"
+          href="#app-bar-with-responsive-menu"
+          sx={{
+            fontWeight: 700,
+            color: "white",
+            textDecoration: "none",
+          }}
+        >
+          TEJAS
+        </Typography>
+      </Box>
+
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         {pages.map((page) => (
-          <Button key={page} sx={{ my: 2, color: "white", display: "block" }}>
+          <Button
+            key={page}
+            sx={{
+              my: 2,
+              color: "white",
+              display: "block",
+              mx: 1,
+              textTransform: "none",
+            }}
+          >
             {page}
           </Button>
         ))}
