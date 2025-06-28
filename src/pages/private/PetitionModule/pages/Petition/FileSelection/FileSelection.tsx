@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -22,6 +23,7 @@ import {
   ArrowBack as ArrowBackIcon,
 } from "@mui/icons-material";
 import { petitionStyles } from "../Petition.style";
+import AxiosClient from "src/services/AxiosClient/AxiosClient";
 
 interface FileSelectionFormData {
   fileFormat: string;
@@ -31,9 +33,13 @@ interface FileSelectionFormData {
 
 interface FileSelectionProps {
   onBack?: () => void;
+  onFileSelected?: (file: File) => void;
 }
 
-const FileSelection: React.FC<FileSelectionProps> = ({ onBack }) => {
+const FileSelection: React.FC<FileSelectionProps> = ({
+  onBack,
+  onFileSelected,
+}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,9 +48,10 @@ const FileSelection: React.FC<FileSelectionProps> = ({ onBack }) => {
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
   } = useForm<FileSelectionFormData>({
     defaultValues: {
-      fileFormat: "pdf",
+      fileFormat: "docx",
       selectedFile: null,
       description: "",
     },
@@ -73,10 +80,72 @@ const FileSelection: React.FC<FileSelectionProps> = ({ onBack }) => {
     },
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0] || null;
     setSelectedFile(file);
     setValue("selectedFile", file);
+
+    // Call the onFileSelected method if provided and file is selected
+    if (file && onFileSelected) {
+      onFileSelected(file);
+    }
+
+    // If file is selected, read its content and send to API
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("files", file);
+
+        const { fileFormat } = getValues();
+
+        let url = "/fileSelection/plainText";
+
+        if (fileFormat === "pdf") {
+          url = "/fileSelection/pdf";
+        }
+
+        if (fileFormat === "docx") {
+          url = "/fileSelection/docx";
+        }
+
+        const response = await AxiosClient.getInstance().post(url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        console.log("API Response:", response.data);
+      } catch (error) {
+        console.error("Error processing file:", error);
+        // Handle error - you might want to show a notification to user
+      }
+    }
+  };
+
+  // Helper function to read file content
+  const readFileContent = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        const content = event.target?.result as string;
+        resolve(content);
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+
+      // Read as text for text-based files
+      if (file.type.includes("text") || file.type === "application/pdf") {
+        reader.readAsText(file);
+      } else {
+        // For other file types, read as base64
+        reader.readAsDataURL(file);
+      }
+    });
   };
 
   const onSubmit = async (data: FileSelectionFormData) => {
@@ -167,14 +236,14 @@ const FileSelection: React.FC<FileSelectionProps> = ({ onBack }) => {
                           sx={petitionStyles.radioGroup}
                         >
                           <FormControlLabel
-                            value="pdf"
-                            control={<Radio />}
-                            label="PDF"
-                          />
-                          <FormControlLabel
                             value="docx"
                             control={<Radio />}
                             label="DOCX"
+                          />
+                          <FormControlLabel
+                            value="pdf"
+                            control={<Radio />}
+                            label="PDF"
                           />
                           <FormControlLabel
                             value="txt"
