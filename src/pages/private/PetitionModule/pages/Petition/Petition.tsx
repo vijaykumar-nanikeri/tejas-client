@@ -4,8 +4,9 @@ import FileSelection from "./FileSelection/FileSelection";
 import EvidenceChecklist from "./EvidenceChecklist/EvidenceChecklist";
 import PetitionQuality from "../PetitionQuality/PetitionQuality";
 import PetitionSummaryStatus from "../PetitionSummaryStatus/PetitionSummaryStatus";
+import FinalEvaluationReport from "../FinalEvaluationReport";
 
-type PetitionView = "form" | "quality" | "summary";
+type PetitionView = "form" | "quality" | "summary" | "finalReport";
 
 const Petition: React.FC = () => {
   const [currentView, setCurrentView] = useState<PetitionView>("form");
@@ -18,12 +19,16 @@ const Petition: React.FC = () => {
     setCurrentView("form");
   };
 
-  const handleProceedToSummary = () => {
-    setCurrentView("summary");
-  };
-
   const handleBackToQuality = () => {
     setCurrentView("quality");
+  };
+
+  const handleShowFinalReport = () => {
+    setCurrentView("finalReport");
+  };
+
+  const handleBackToSummary = () => {
+    setCurrentView("summary");
   };
 
   const renderContent = () => {
@@ -32,11 +37,18 @@ const Petition: React.FC = () => {
         return (
           <PetitionQuality
             onBack={handleBackToPetition}
-            onProceedToSummary={handleProceedToSummary}
+            onProceedToSummary={handleShowFinalReport}
           />
         );
       case "summary":
-        return <PetitionSummaryStatus onBack={handleBackToQuality} />;
+        return (
+          <PetitionSummaryStatus
+            onBack={handleBackToQuality}
+            onGenerateReport={handleShowFinalReport}
+          />
+        );
+      case "finalReport":
+        return <FinalEvaluationReport onBack={handleBackToSummary} />;
       default:
         return (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>

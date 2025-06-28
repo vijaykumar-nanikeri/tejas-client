@@ -16,10 +16,12 @@ interface ClaimSummaryData {
 
 interface PetitionSummaryStatusProps {
   onBack?: () => void;
+  onGenerateReport?: () => void;
 }
 
 const PetitionSummaryStatus: React.FC<PetitionSummaryStatusProps> = ({
   onBack,
+  onGenerateReport,
 }) => {
   const claimsData: ClaimSummaryData[] = [
     {
@@ -59,11 +61,6 @@ const PetitionSummaryStatus: React.FC<PetitionSummaryStatusProps> = ({
   const handleSubmitToSP = () => {
     console.log("Submitting to SP...");
     // Add submit to SP logic here
-  };
-
-  const handleGenerateReport = () => {
-    console.log("Generating petition report...");
-    // Add report generation logic here
   };
 
   return (
@@ -137,7 +134,7 @@ const PetitionSummaryStatus: React.FC<PetitionSummaryStatusProps> = ({
       <ActionButtons
         onDownloadPDF={handleDownloadPDF}
         onSubmitToSP={handleSubmitToSP}
-        onGenerateReport={handleGenerateReport}
+        onGenerateReport={onGenerateReport}
       />
     </Box>
   );
