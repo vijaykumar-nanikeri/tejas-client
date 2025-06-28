@@ -1,0 +1,317 @@
+import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Button,
+  InputAdornment,
+  TextField,
+  Paper,
+  Chip,
+} from "@mui/material";
+import {
+  Description as DescriptionIcon,
+  Upload as UploadIcon,
+  Send as SendIcon,
+  ArrowBack as ArrowBackIcon,
+} from "@mui/icons-material";
+import { petitionStyles } from "../Petition.style";
+
+interface FileSelectionFormData {
+  fileFormat: string;
+  selectedFile: File | null;
+  description: string;
+}
+
+interface FileSelectionProps {
+  onBack?: () => void;
+}
+
+const FileSelection: React.FC<FileSelectionProps> = ({ onBack }) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<FileSelectionFormData>({
+    defaultValues: {
+      fileFormat: "pdf",
+      selectedFile: null,
+      description: "",
+    },
+  });
+
+  const formValidationRules = {
+    fileFormat: {
+      required: "Please select a file format",
+    },
+    selectedFile: {
+      required: "Please select a file to upload",
+      validate: (value: File | null) => {
+        if (!value) return "Please select a file";
+        if (value.size > 10 * 1024 * 1024) {
+          return "File size should be less than 10MB";
+        }
+        return true;
+      },
+    },
+    description: {
+      required: "Please provide a description",
+      minLength: {
+        value: 10,
+        message: "Description must be at least 10 characters",
+      },
+    },
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setSelectedFile(file);
+    setValue("selectedFile", file);
+  };
+
+  const onSubmit = async (data: FileSelectionFormData) => {
+    setIsSubmitting(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log("File selection submitted:", data);
+      // Handle success - could trigger evidence checklist generation
+    } catch (error) {
+      console.error("Error submitting file selection:", error);
+      // Handle error
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <Box sx={petitionStyles.container}>
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        {onBack && (
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={onBack}
+            variant="outlined"
+            sx={{
+              textTransform: "capitalize",
+              position: "absolute",
+              left: 0,
+              zIndex: 1,
+            }}
+          >
+            Back
+          </Button>
+        )}
+        <Typography
+          variant="h6"
+          sx={{
+            width: "100%",
+            textAlign: "center",
+            fontWeight: 600,
+            color: "primary.main",
+            fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+            letterSpacing: 0.5,
+          }}
+        >
+          File Selection & Upload
+        </Typography>
+      </Box>
+
+      <Card sx={{ ...petitionStyles.card, width: "100%" }}>
+        <CardContent sx={{ ...petitionStyles.cardContent, p: 2 }}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={{ display: "flex", gap: 3 }}>
+              {/* First Column - 40% */}
+              <Box
+                sx={{
+                  width: "40%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                {/* File Format Selection */}
+                <Box sx={petitionStyles.stackBox}>
+                  <Typography variant="body1" gutterBottom>
+                    Select File Format
+                  </Typography>
+                  <Controller
+                    name="fileFormat"
+                    control={control}
+                    rules={formValidationRules.fileFormat}
+                    render={({ field }) => (
+                      <FormControl
+                        component="fieldset"
+                        error={!!errors.fileFormat}
+                      >
+                        <RadioGroup
+                          {...field}
+                          row
+                          sx={petitionStyles.radioGroup}
+                        >
+                          <FormControlLabel
+                            value="pdf"
+                            control={<Radio />}
+                            label="PDF"
+                          />
+                          <FormControlLabel
+                            value="docx"
+                            control={<Radio />}
+                            label="DOCX"
+                          />
+                          <FormControlLabel
+                            value="txt"
+                            control={<Radio />}
+                            label="TXT"
+                          />
+                        </RadioGroup>
+                        {errors.fileFormat && (
+                          <Typography color="error" variant="caption">
+                            {errors.fileFormat.message}
+                          </Typography>
+                        )}
+                      </FormControl>
+                    )}
+                  />
+                </Box>
+
+                {/* File Upload */}
+                <Box sx={{ width: "100%" }}>
+                  <Typography variant="body1" gutterBottom>
+                    Upload File
+                  </Typography>
+                  <Controller
+                    name="selectedFile"
+                    control={control}
+                    rules={formValidationRules.selectedFile}
+                    render={({}) => (
+                      <Box>
+                        <Paper
+                          variant="outlined"
+                          sx={petitionStyles.uploadPaper(selectedFile)}
+                        >
+                          <Box sx={petitionStyles.uploadContainer}>
+                            <input
+                              type="file"
+                              accept=".pdf,.docx,.txt"
+                              onChange={handleFileChange}
+                              style={{ display: "none" }}
+                              id="file-upload"
+                            />
+                            <label htmlFor="file-upload">
+                              <Button
+                                component="span"
+                                variant="contained"
+                                startIcon={<UploadIcon />}
+                                sx={petitionStyles.chooseFileButton}
+                              >
+                                Choose File
+                              </Button>
+                            </label>
+                            {selectedFile && (
+                              <Chip
+                                label={selectedFile.name}
+                                color="success"
+                                onDelete={() => {
+                                  setSelectedFile(null);
+                                  setValue("selectedFile", null);
+                                }}
+                              />
+                            )}
+                          </Box>
+                        </Paper>
+                        {errors.selectedFile && (
+                          <Typography color="error" variant="caption">
+                            {errors.selectedFile.message}
+                          </Typography>
+                        )}
+                      </Box>
+                    )}
+                  />
+                </Box>
+              </Box>
+
+              {/* Second Column - 60% */}
+              <Box
+                sx={{ width: "60%", display: "flex", flexDirection: "column" }}
+              >
+                <Typography variant="body1" gutterBottom>
+                  Description
+                </Typography>
+                <Controller
+                  name="description"
+                  control={control}
+                  rules={formValidationRules.description}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      multiline
+                      fullWidth
+                      placeholder="Enter petition description..."
+                      error={!!errors.description}
+                      helperText={errors.description?.message}
+                      sx={{
+                        height: "175px",
+                        "& .MuiInputBase-root": {
+                          height: "100%",
+                          alignItems: "flex-start",
+                        },
+                        "& .MuiInputBase-input": {
+                          height: "100% !important",
+                          overflow: "auto",
+                          resize: "none",
+                        },
+                      }}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start" sx={{ mt: 1 }}>
+                            <DescriptionIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
+              </Box>
+            </Box>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Extract Claims Button - Outside the card */}
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mb: 0 }}>
+        <Button
+          onClick={handleSubmit(onSubmit)}
+          variant="contained"
+          disabled={isSubmitting}
+          startIcon={<SendIcon />}
+          sx={{
+            fontWeight: 600,
+            textTransform: "capitalize",
+          }}
+        >
+          {isSubmitting ? "Extracting..." : "Extract Claims"}
+        </Button>
+      </Box>
+    </Box>
+  );
+};
+
+export default FileSelection;
