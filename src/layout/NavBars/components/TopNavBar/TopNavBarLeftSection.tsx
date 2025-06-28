@@ -4,10 +4,24 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Security from "@mui/icons-material/Security";
+import { useNavigate } from "react-router-dom";
+import { WebPaths } from "src/routing/routes";
 
-const pages = ["Dashboard", "Cases", "Reports", "Analytics"];
+const pages = [
+  { name: "Dashboard", path: WebPaths.Home },
+  { name: "Petition", path: WebPaths.Petition },
+  { name: "Cases", path: "/cases" },
+  { name: "Reports", path: "/reports" },
+  { name: "Analytics", path: "/analytics" },
+];
 
 function TopNavBarLeftSection() {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
   return (
     <>
       <Box
@@ -43,7 +57,7 @@ function TopNavBarLeftSection() {
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         {pages.map((page) => (
           <Button
-            key={page}
+            key={page.name}
             sx={{
               my: 2,
               color: "white",
@@ -51,8 +65,9 @@ function TopNavBarLeftSection() {
               mx: 1,
               textTransform: "none",
             }}
+            onClick={() => handleNavigation(page.path)}
           >
-            {page}
+            {page.name}
           </Button>
         ))}
       </Box>

@@ -11,6 +11,8 @@ import {
   InputAdornment,
   IconButton,
   Container,
+  Card,
+  CardContent,
 } from "@mui/material";
 import {
   Visibility,
@@ -21,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import AxiosClient from "src/services/AxiosClient/AxiosClient";
 import { AUTH_TOKEN_KEY, USER_DATA_KEY } from "src/app-configs/app.config";
+import { signInStyles } from "./SignIn.style";
 
 // TypeScript interfaces
 interface SignInFormData {
@@ -154,222 +157,148 @@ const SignIn: React.FC<SignInProps> = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <Container
-      maxWidth={false}
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        p: 0,
-        m: 0,
-      }}
-    >
-      {/* Left Section - Branding (60%) */}
-      <Box
-        sx={{
-          width: "60%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          px: 4,
-          background:
-            "linear-gradient(to bottom, #2c1810 0%, #4a148c 70%, #6a1b9a 100%)",
-        }}
-      >
-        {/* Tejas Logo */}
-        <Box
-          sx={{
-            width: 120,
-            height: 120,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #ff6b6b, #ee5a24)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mb: 4,
-            boxShadow: 3,
-          }}
-        >
-          <Security
-            sx={{
-              fontSize: 60,
-              color: "white",
-            }}
-          />
-        </Box>
-
-        {/* Tagline */}
-        <Typography
-          variant="h2"
-          sx={{
-            fontWeight: 700,
-            color: "white",
-            textAlign: "center",
-            mb: 2,
-            textShadow: 1,
-          }}
-        >
-          TEJAS
-        </Typography>
-
-        <Typography
-          variant="h5"
-          sx={{
-            color: "rgba(255,255,255,0.9)",
-            textAlign: "center",
-            mb: 3,
-            fontWeight: 300,
-            maxWidth: 600,
-            lineHeight: 1.4,
-          }}
-        >
-          Triage of Evidence and Justification Automation System
-        </Typography>
-
-        {/* Subtitle */}
-        <Typography
-          variant="body1"
-          sx={{
-            color: "rgba(255,255,255,0.7)",
-            textAlign: "center",
-            fontWeight: 300,
-          }}
-        >
-          Empowering Law Enforcement with AI-Driven Intelligence
-        </Typography>
-      </Box>
-
-      {/* Right Section - Sign In Form (40%) */}
-      <Box
-        sx={{
-          width: "40%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          px: 4,
-          bgcolor: "#f8fafc",
-        }}
-      >
-        <Box sx={{ width: "100%", maxWidth: 400 }}>
-          <Box sx={{ textAlign: "center", mb: 4 }}>
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 600,
-                mb: 1,
-                color: "text.primary",
-              }}
-            >
-              SignIn
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              for duty
-            </Typography>
+    <Container maxWidth={false} sx={signInStyles.root}>
+      <Box sx={signInStyles.container}>
+        {/* Left Section - Branding (60%) */}
+        <Box sx={signInStyles.leftSection}>
+          {/* Tejas Logo */}
+          <Box sx={signInStyles.logoContainer}>
+            <Security sx={signInStyles.logo} />
           </Box>
 
-          {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {error}
-            </Alert>
-          )}
+          {/* Tagline */}
+          <Typography variant="h2" sx={signInStyles.title}>
+            TEJAS
+          </Typography>
 
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Stack spacing={3}>
-              {/* Mobile Number Field */}
-              <Controller
-                name="mobileNo"
-                control={control}
-                rules={formValidationRules.mobileNo}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Mobile Number"
-                    variant="outlined"
-                    fullWidth
-                    disabled={isLoading}
-                    error={!!errors.mobileNo}
-                    helperText={errors.mobileNo?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Phone color="action" />
-                        </InputAdornment>
-                      ),
-                    }}
-                    inputProps={{
-                      maxLength: 10,
-                      pattern: "[0-9]*",
-                    }}
-                    onKeyPress={handleKeyPress}
-                  />
+          <Typography variant="h5" sx={signInStyles.tagline}>
+            Triage of Evidence and Justification Automation System
+          </Typography>
+
+          {/* Subtitle */}
+          <Typography variant="body1" sx={signInStyles.tagline}>
+            Empowering Law Enforcement with AI-Driven Intelligence
+          </Typography>
+        </Box>
+
+        {/* Right Section - Sign In Form (40%) */}
+        <Box sx={signInStyles.rightSection}>
+          <Box sx={signInStyles.formContainer}>
+            <Card sx={signInStyles.formCard}>
+              <CardContent>
+                <Box sx={{ textAlign: "center", mb: 4 }}>
+                  <Typography variant="h4" sx={signInStyles.formTitle}>
+                    SignIn
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    for duty
+                  </Typography>
+                </Box>
+
+                {error && (
+                  <Alert severity="error" sx={{ mb: 3 }}>
+                    {error}
+                  </Alert>
                 )}
-              />
 
-              {/* Password Field */}
-              <Controller
-                name="password"
-                control={control}
-                rules={formValidationRules.password}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Password"
-                    variant="outlined"
-                    type={showPassword ? "text" : "password"}
-                    fullWidth
-                    disabled={isLoading}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Lock color="action" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={togglePasswordVisibility}
-                            edge="end"
-                            disabled={isLoading}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    onKeyPress={handleKeyPress}
-                  />
-                )}
-              />
+                <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                  <Stack spacing={3}>
+                    {/* Mobile Number Field */}
+                    <Controller
+                      name="mobileNo"
+                      control={control}
+                      rules={formValidationRules.mobileNo}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Mobile Number"
+                          variant="outlined"
+                          fullWidth
+                          disabled={isLoading}
+                          error={!!errors.mobileNo}
+                          helperText={errors.mobileNo?.message}
+                          sx={signInStyles.textField}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Phone color="action" />
+                              </InputAdornment>
+                            ),
+                          }}
+                          inputProps={{
+                            maxLength: 10,
+                            pattern: "[0-9]*",
+                          }}
+                          onKeyPress={handleKeyPress}
+                        />
+                      )}
+                    />
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                variant="contained"
-                size="large"
-                disabled={!isValid || isLoading}
-                startIcon={
-                  isLoading ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    <Security />
-                  )
-                }
-                sx={{
-                  py: 1.5,
-                  fontWeight: 600,
-                  textTransform: "none",
-                  bgcolor: "primary.main",
-                  "&:hover": {
-                    bgcolor: "primary.dark",
-                  },
-                }}
-              >
-                {isLoading ? "Signing In..." : "Sign In"}
-              </Button>
-            </Stack>
-          </form>
+                    {/* Password Field */}
+                    <Controller
+                      name="password"
+                      control={control}
+                      rules={formValidationRules.password}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Password"
+                          variant="outlined"
+                          type={showPassword ? "text" : "password"}
+                          fullWidth
+                          disabled={isLoading}
+                          error={!!errors.password}
+                          helperText={errors.password?.message}
+                          sx={signInStyles.textField}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Lock color="action" />
+                              </InputAdornment>
+                            ),
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={togglePasswordVisibility}
+                                  edge="end"
+                                  disabled={isLoading}
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                          onKeyPress={handleKeyPress}
+                        />
+                      )}
+                    />
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      disabled={!isValid || isLoading}
+                      startIcon={
+                        isLoading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          <Security />
+                        )
+                      }
+                      sx={signInStyles.submitButton}
+                    >
+                      {isLoading ? "Signing In..." : "Sign In"}
+                    </Button>
+                  </Stack>
+                </form>
+              </CardContent>
+            </Card>
+          </Box>
         </Box>
       </Box>
     </Container>

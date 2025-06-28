@@ -5,6 +5,9 @@ import { Routes, Route } from "react-router-dom";
 import { WebPaths } from "src/routing/routes";
 
 const Home = lazy(() => import("src/pages/private/Home/Home"));
+const Petition = lazy(
+  () => import("src/pages/private/PetitionModule/pages/Petition/Petition")
+);
 
 type Props = {
   isAuthenticated: boolean;
@@ -25,6 +28,11 @@ const PrivateRoute: React.FC<Props> = ({
           setIsAuthenticated={setIsAuthenticated}
         />
       ),
+    },
+    {
+      key: "petition",
+      path: WebPaths.Petition,
+      Component: <Petition />,
     },
   ];
 

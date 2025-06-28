@@ -3,6 +3,7 @@ enum WebPaths {
   AuthPath = "/auth",
 
   Home = "/",
+  Petition = "/petition",
 }
 
 const loginPath = `${WebPaths.AuthPath}${WebPaths.SignIn}`;
