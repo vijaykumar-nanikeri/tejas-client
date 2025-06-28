@@ -79,7 +79,7 @@ function ResponsiveAppBar({ setIsAuthenticated }: Props) {
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => handleMenuClick("Logout")}>
-          <Typography color="error">Logout</Typography>
+          <Typography sx={{ color: "text.primary" }}>Logout</Typography>
         </MenuItem>
       </Menu>
     </Box>
