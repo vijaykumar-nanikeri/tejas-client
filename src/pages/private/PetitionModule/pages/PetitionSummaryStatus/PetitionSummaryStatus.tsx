@@ -1,7 +1,8 @@
 import React from "react";
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
 import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
-import { ClaimSummary, ActionButtons } from "./components";
+import ClaimSummary from "./components/ClaimSummary";
+import ActionButtons from "./components/ActionButtons";
 import { petitionSummaryStyles } from "./PetitionSummaryStatus.style";
 
 interface ClaimSummaryData {

@@ -4,7 +4,7 @@ import {
   ArrowBack as ArrowBackIcon,
   Assessment as AssessmentIcon,
 } from "@mui/icons-material";
-import { ClaimSection } from "./components";
+import ClaimSection from "./components/ClaimSection";
 import { petitionQualityStyles } from "./PetitionQuality.style";
 import { claimsData } from "./data/claimsData";
 
