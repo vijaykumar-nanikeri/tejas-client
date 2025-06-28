@@ -3,46 +3,61 @@ import { Box } from "@mui/material";
 import FileSelection from "./FileSelection/FileSelection";
 import EvidenceChecklist from "./EvidenceChecklist/EvidenceChecklist";
 import PetitionQuality from "../PetitionQuality/PetitionQuality";
+import PetitionSummaryStatus from "../PetitionSummaryStatus/PetitionSummaryStatus";
+
+type PetitionView = "form" | "quality" | "summary";
 
 const Petition: React.FC = () => {
-  const [showQualityReview, setShowQualityReview] = useState(false);
+  const [currentView, setCurrentView] = useState<PetitionView>("form");
 
   const handleShowQualityReview = () => {
-    setShowQualityReview(true);
+    setCurrentView("quality");
   };
 
   const handleBackToPetition = () => {
-    setShowQualityReview(false);
+    setCurrentView("form");
   };
 
-  if (showQualityReview) {
-    return (
-      <Box
-        sx={{
-          width: "100%",
-          p: 2,
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <PetitionQuality onBack={handleBackToPetition} />
-      </Box>
-    );
-  }
+  const handleProceedToSummary = () => {
+    setCurrentView("summary");
+  };
+
+  const handleBackToQuality = () => {
+    setCurrentView("quality");
+  };
+
+  const renderContent = () => {
+    switch (currentView) {
+      case "quality":
+        return (
+          <PetitionQuality
+            onBack={handleBackToPetition}
+            onProceedToSummary={handleProceedToSummary}
+          />
+        );
+      case "summary":
+        return <PetitionSummaryStatus onBack={handleBackToQuality} />;
+      default:
+        return (
+          <>
+            <FileSelection />
+            <EvidenceChecklist onShowQualityReview={handleShowQualityReview} />
+          </>
+        );
+    }
+  };
 
   return (
     <Box
       sx={{
         width: "100%",
-        p: 2, // 16px margin
+        p: 2,
         display: "flex",
         flexDirection: "column",
-        gap: 2, // 16px gap between cards
+        gap: 2,
       }}
     >
-      <FileSelection />
-      <EvidenceChecklist onShowQualityReview={handleShowQualityReview} />
+      {renderContent()}
     </Box>
   );
 };

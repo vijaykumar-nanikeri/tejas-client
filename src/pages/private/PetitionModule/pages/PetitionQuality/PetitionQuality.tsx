@@ -1,15 +1,22 @@
 import React from "react";
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
-import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
+import {
+  ArrowBack as ArrowBackIcon,
+  Assessment as AssessmentIcon,
+} from "@mui/icons-material";
 import { ClaimSection } from "./components";
 import { petitionQualityStyles } from "./PetitionQuality.style";
 import { claimsData } from "./data/claimsData";
 
 interface PetitionQualityProps {
   onBack?: () => void;
+  onProceedToSummary?: () => void;
 }
 
-const PetitionQuality: React.FC<PetitionQualityProps> = ({ onBack }) => {
+const PetitionQuality: React.FC<PetitionQualityProps> = ({
+  onBack,
+  onProceedToSummary,
+}) => {
   return (
     <Box sx={petitionQualityStyles.container}>
       {onBack && (
@@ -18,7 +25,6 @@ const PetitionQuality: React.FC<PetitionQualityProps> = ({ onBack }) => {
             startIcon={<ArrowBackIcon />}
             onClick={onBack}
             variant="outlined"
-            size="small"
             sx={{ textTransform: "capitalize" }}
           >
             Back to Petition
@@ -39,6 +45,22 @@ const PetitionQuality: React.FC<PetitionQualityProps> = ({ onBack }) => {
               isLast={index === claimsData.length - 1}
             />
           ))}
+
+          {onProceedToSummary && (
+            <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                variant="contained"
+                startIcon={<AssessmentIcon />}
+                onClick={onProceedToSummary}
+                sx={{
+                  fontWeight: 600,
+                  textTransform: "capitalize",
+                }}
+              >
+                Proceed to Summary
+              </Button>
+            </Box>
+          )}
         </CardContent>
       </Card>
     </Box>
