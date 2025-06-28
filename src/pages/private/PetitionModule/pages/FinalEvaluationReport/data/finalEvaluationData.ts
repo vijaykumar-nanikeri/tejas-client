@@ -36,6 +36,14 @@ export interface ClaimAndFacts {
   supportingFacts: string;
 }
 
+export interface ClaimEvidence {
+  id: number;
+  claimDescription: string;
+  evidenceSubmitted: boolean;
+  documentProofDescription: string;
+  factCheckedAISummary: string;
+}
+
 export interface PetitionDetails {
   petitionId: string;
   priorityLevel: "High" | "Medium" | "Low";
@@ -51,6 +59,7 @@ export interface FinalEvaluationData {
   accusedDetails: AccusedDetails;
   briefFactsSummary: BriefFactsSummary;
   claimsAndFacts: ClaimAndFacts[];
+  claimEvidence: ClaimEvidence[];
 }
 
 export const finalEvaluationData: FinalEvaluationData = {
@@ -101,6 +110,26 @@ export const finalEvaluationData: FinalEvaluationData = {
       claimDescription: "Verbal abuse and harassment in public place",
       supportingFacts:
         "Audio recording of the verbal altercation, statements from shopkeepers in the vicinity, police complaint filed on the same day, multiple witnesses confirming the use of abusive language.",
+    },
+  ],
+  claimEvidence: [
+    {
+      id: 1,
+      claimDescription: "Physical assault and battery causing bodily harm",
+      evidenceSubmitted: true,
+      documentProofDescription:
+        "Medical certificate from Safdarjung Hospital, photographs of injuries, eyewitness statements from 3 bystanders, CCTV footage from Central Market",
+      factCheckedAISummary:
+        "AI analysis confirms medical evidence supports physical injury claims. CCTV footage corroborates the incident timeline. Multiple eyewitness statements provide consistent account of the assault.",
+    },
+    {
+      id: 2,
+      claimDescription: "Verbal abuse and harassment in public place",
+      evidenceSubmitted: false,
+      documentProofDescription:
+        "No audio recordings or witness statements submitted for verbal abuse claims",
+      factCheckedAISummary:
+        "Insufficient evidence to verify verbal abuse allegations. No audio recordings or corroborating witness statements available for AI analysis.",
     },
   ],
 };
