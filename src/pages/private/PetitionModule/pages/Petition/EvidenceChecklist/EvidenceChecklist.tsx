@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Box } from "@mui/material";
-import ClaimChecklistBoard from "../../ClaimChecklistBoard";
+import ClaimChecklistBoard from "./ClaimChecklistBoard";
 
 interface EvidenceChecklistFormData {
   claims: Array<{
