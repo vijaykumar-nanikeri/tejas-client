@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
 import {
   Box,
   TextField,
@@ -21,10 +22,11 @@ import {
 import AxiosClient from "src/services/AxiosClient/AxiosClient";
 import { AUTH_TOKEN_KEY, USER_DATA_KEY } from "src/app-configs/app.config";
 
-type Props = {
-  isAuthenticated: boolean;
-  setIsAuthenticated: (value: boolean) => void;
-};
+// TypeScript interfaces
+interface SignInFormData {
+  mobileNo: string;
+  password: string;
+}
 
 interface LoginResponse {
   statusCode: number;
@@ -39,82 +41,116 @@ interface LoginResponse {
   }>;
 }
 
-function App({ setIsAuthenticated }: Props) {
-  const [mobileNo, setMobileNo] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+interface SignInProps {
+  isAuthenticated: boolean;
+  setIsAuthenticated: (value: boolean) => void;
+}
 
-  const handleLogin = async () => {
-    if (!mobileNo.trim() || !password.trim()) {
-      setError("Please enter both mobile number and password");
-      return;
-    }
+// Form validation rules
+const formValidationRules = {
+  mobileNo: {
+    required: "Mobile number is required",
+    pattern: {
+      value: /^[0-9]{10}$/,
+      message: "Please enter a valid 10-digit mobile number",
+    },
+  },
+  password: {
+    required: "Password is required",
+    minLength: {
+      value: 6,
+      message: "Password must be at least 6 characters",
+    },
+  },
+};
 
-    setLoading(true);
+const SignIn: React.FC<SignInProps> = ({ setIsAuthenticated }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  // React Hook Form setup
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<SignInFormData>({
+    mode: "onChange",
+    defaultValues: {
+      mobileNo: "",
+      password: "",
+    },
+  });
+
+  // Handle form submission
+  const onSubmit = async (data: SignInFormData): Promise<void> => {
+    setIsLoading(true);
     setError("");
 
     try {
       const response = await AxiosClient.getInstance().post("/login", {
-        mobileNo: mobileNo.trim(),
-        password: password,
+        mobileNo: data.mobileNo.trim(),
+        password: data.password,
       });
 
       const responseData = response.data as LoginResponse;
 
-      console.log("vvv-responseData: ", responseData);
+      console.log("Login response:", responseData);
 
       if (responseData.statusCode === 200) {
-        // Store the auth token
+        // Store authentication data
         localStorage.setItem(AUTH_TOKEN_KEY, responseData.authToken);
 
-        // Store user data if needed
-        if (responseData.data && responseData.data.length > 0) {
+        if (responseData.data?.[0]) {
           const userData = responseData.data[0];
           localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
         }
 
         // Update authentication state
         setIsAuthenticated(true);
-
-        // Dispatch custom event for cross-tab detection
         window.dispatchEvent(new Event("tokenChanged"));
       } else {
         setError(responseData.statusMessage || "Login failed");
       }
     } catch (error: any) {
       console.error("Login error:", error);
-
-      if (error.response) {
-        // Server responded with error status
-        if (error.response.status === 401) {
-          setError("Invalid mobile number or password");
-        } else if (error.response.status === 500) {
-          setError("Server error. Please try again later.");
-        } else {
-          setError(error.response.data?.statusMessage || "Login failed");
-        }
-      } else if (error.request) {
-        // Network error
-        setError("Network error. Please check your connection.");
-      } else {
-        // Other error
-        setError("An unexpected error occurred");
-      }
+      handleLoginError(error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter" && !loading) {
-      handleLogin();
+  // Handle login errors
+  const handleLoginError = (error: any): void => {
+    if (error.response) {
+      const { status } = error.response;
+      switch (status) {
+        case 401:
+          setError("Invalid mobile number or password");
+          break;
+        case 500:
+          setError("Server error. Please try again later.");
+          break;
+        default:
+          setError(error.response.data?.statusMessage || "Login failed");
+      }
+    } else if (error.request) {
+      setError("Network error. Please check your connection.");
+    } else {
+      setError("An unexpected error occurred");
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  // Toggle password visibility
+  const togglePasswordVisibility = (): void => {
+    setShowPassword((prev) => !prev);
+  };
+
+  // Handle Enter key press
+  const handleKeyPress = (event: React.KeyboardEvent): void => {
+    if (event.key === "Enter" && !isLoading && isValid) {
+      handleSubmit(onSubmit)();
+    }
   };
 
   return (
@@ -127,7 +163,7 @@ function App({ setIsAuthenticated }: Props) {
         m: 0,
       }}
     >
-      {/* Left Section - Branding (60%) - Dark Purple Gradient at Bottom */}
+      {/* Left Section - Branding (60%) */}
       <Box
         sx={{
           width: "60%",
@@ -203,7 +239,7 @@ function App({ setIsAuthenticated }: Props) {
         </Typography>
       </Box>
 
-      {/* Right Section - Sign In Form (40%) - Better Contrast Background */}
+      {/* Right Section - Sign In Form (40%) */}
       <Box
         sx={{
           width: "40%",
@@ -237,82 +273,107 @@ function App({ setIsAuthenticated }: Props) {
             </Alert>
           )}
 
-          <Stack spacing={3}>
-            <TextField
-              label="Mobile Number"
-              variant="outlined"
-              fullWidth
-              value={mobileNo}
-              onChange={(e) => setMobileNo(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={loading}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Phone color="action" />
-                  </InputAdornment>
-                ),
-              }}
-              inputProps={{
-                maxLength: 10,
-                pattern: "[0-9]*",
-              }}
-            />
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <Stack spacing={3}>
+              {/* Mobile Number Field */}
+              <Controller
+                name="mobileNo"
+                control={control}
+                rules={formValidationRules.mobileNo}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Mobile Number"
+                    variant="outlined"
+                    fullWidth
+                    disabled={isLoading}
+                    error={!!errors.mobileNo}
+                    helperText={errors.mobileNo?.message}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Phone color="action" />
+                        </InputAdornment>
+                      ),
+                    }}
+                    inputProps={{
+                      maxLength: 10,
+                      pattern: "[0-9]*",
+                    }}
+                    onKeyPress={handleKeyPress}
+                  />
+                )}
+              />
 
-            <TextField
-              label="Password"
-              variant="outlined"
-              type={showPassword ? "text" : "password"}
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={loading}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock color="action" />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={togglePasswordVisibility} edge="end">
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+              {/* Password Field */}
+              <Controller
+                name="password"
+                control={control}
+                rules={formValidationRules.password}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Password"
+                    variant="outlined"
+                    type={showPassword ? "text" : "password"}
+                    fullWidth
+                    disabled={isLoading}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock color="action" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={togglePasswordVisibility}
+                            edge="end"
+                            disabled={isLoading}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    onKeyPress={handleKeyPress}
+                  />
+                )}
+              />
 
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleLogin}
-              disabled={!mobileNo.trim() || !password.trim() || loading}
-              startIcon={
-                loading ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  <Security />
-                )
-              }
-              sx={{
-                py: 1.5,
-                fontWeight: 600,
-                textTransform: "none",
-                bgcolor: "primary.main",
-                "&:hover": {
-                  bgcolor: "primary.dark",
-                },
-              }}
-            >
-              {loading ? "Signing In..." : "Sign In"}
-            </Button>
-          </Stack>
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                disabled={!isValid || isLoading}
+                startIcon={
+                  isLoading ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    <Security />
+                  )
+                }
+                sx={{
+                  py: 1.5,
+                  fontWeight: 600,
+                  textTransform: "none",
+                  bgcolor: "primary.main",
+                  "&:hover": {
+                    bgcolor: "primary.dark",
+                  },
+                }}
+              >
+                {isLoading ? "Signing In..." : "Sign In"}
+              </Button>
+            </Stack>
+          </form>
         </Box>
       </Box>
     </Container>
   );
-}
+};
 
-export default App;
+export default SignIn;
