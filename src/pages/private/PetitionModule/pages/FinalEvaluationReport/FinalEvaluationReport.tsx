@@ -10,6 +10,7 @@ import EnquiryReportSummary from "./components/EnquiryReportSummary";
 import Remarks from "./components/Remarks";
 import ActionDetailsByIO from "./components/ActionDetailsByIO";
 import SystemRecommendations from "./components/SystemRecommendations";
+import EvidenceStrengthAnalysis from "./components/EvidenceStrengthAnalysis";
 import ClaimsAndFacts from "./components/ClaimsAndFacts";
 import ClaimEvidence from "./components/ClaimEvidence";
 import { finalEvaluationData } from "./data/finalEvaluationData";
@@ -39,9 +40,17 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
     remarks: finalEvaluationData.remarks,
     actionDetailsByIO: finalEvaluationData.actionDetailsByIO,
     systemRecommendations: finalEvaluationData.systemRecommendations,
+    evidenceStrengthAnalysis: finalEvaluationData.evidenceStrengthAnalysis,
     claimsAndFacts: finalEvaluationData.claimsAndFacts,
     claimEvidence: finalEvaluationData.claimEvidence,
   };
+
+  // Calculate scores
+  const overallAIScore = Math.round(
+    data.evidenceStrengthAnalysis.reduce((sum, item) => sum + item.score, 0) /
+      data.evidenceStrengthAnalysis.length
+  );
+  const officerScore = 3; // Sample officer score
 
   return (
     <Box
@@ -91,6 +100,15 @@ const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
       {/* Enquiry Report Summary Section */}
       <Box sx={{ mb: 3 }}>
         <EnquiryReportSummary content={data.enquiryReportSummary.summary} />
+      </Box>
+
+      {/* Evidence Strength Analysis Section */}
+      <Box sx={{ mb: 3 }}>
+        <EvidenceStrengthAnalysis
+          evidenceStrengthAnalysis={data.evidenceStrengthAnalysis}
+          overallAIScore={overallAIScore}
+          officerScore={officerScore}
+        />
       </Box>
 
       {/* Remarks Section */}

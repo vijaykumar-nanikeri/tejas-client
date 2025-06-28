@@ -60,6 +60,12 @@ export interface SystemRecommendations {
   content: string;
 }
 
+export interface EvidenceStrengthAnalysis {
+  id: number;
+  metric: string;
+  score: number;
+}
+
 export interface PetitionDetails {
   petitionId: string;
   priorityLevel: "High" | "Medium" | "Low";
@@ -78,6 +84,7 @@ export interface FinalEvaluationData {
   remarks: Remarks;
   actionDetailsByIO: ActionDetailsByIO;
   systemRecommendations: SystemRecommendations;
+  evidenceStrengthAnalysis: EvidenceStrengthAnalysis[];
   claimsAndFacts: ClaimAndFacts[];
   claimEvidence: ClaimEvidence[];
 }
@@ -132,6 +139,38 @@ export const finalEvaluationData: FinalEvaluationData = {
     content:
       "Sample remarks. Based on the AI analysis and evaluation of all submitted evidence, the system recommends proceeding with the case as the claims appear substantiated. Further investigation may be required to strengthen certain aspects of the case, particularly regarding the verbal abuse allegations.",
   },
+  evidenceStrengthAnalysis: [
+    {
+      id: 1,
+      metric: "Medical Evidence Quality",
+      score: 8,
+    },
+    {
+      id: 2,
+      metric: "CCTV Footage Clarity",
+      score: 7,
+    },
+    {
+      id: 3,
+      metric: "Witness Statement Reliability",
+      score: 6,
+    },
+    {
+      id: 4,
+      metric: "Documentary Evidence Completeness",
+      score: 5,
+    },
+    {
+      id: 5,
+      metric: "Digital Evidence Integrity",
+      score: 4,
+    },
+    {
+      id: 6,
+      metric: "Investigation Timeline Accuracy",
+      score: 7,
+    },
+  ],
   claimsAndFacts: [
     {
       id: 1,
