@@ -8,11 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { WebPaths } from "src/routing/routes";
 
 const pages = [
-  { name: "Dashboard", path: WebPaths.Home },
+  { name: "Home", path: WebPaths.Home },
   { name: "Petition", path: WebPaths.Petition },
-  { name: "Cases", path: "/cases" },
-  { name: "Reports", path: "/reports" },
-  { name: "Analytics", path: "/analytics" },
 ];
 
 function TopNavBarLeftSection() {

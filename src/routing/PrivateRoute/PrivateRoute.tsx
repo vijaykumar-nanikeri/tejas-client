@@ -22,12 +22,7 @@ const PrivateRoute: React.FC<Props> = ({
     {
       key: "home",
       path: WebPaths.Home,
-      Component: (
-        <Home
-          isAuthenticated={isAuthenticated}
-          setIsAuthenticated={setIsAuthenticated}
-        />
-      ),
+      Component: <Home />,
     },
     {
       key: "petition",

@@ -21,6 +21,11 @@ export const theme = createTheme({
       defaultProps: {
         size: "small",
       },
+      styleOverrides: {
+        root: {
+          textTransform: "capitalize",
+        },
+      },
     },
     MuiTextField: {
       defaultProps: {

@@ -8,12 +8,16 @@ export const petitionStyles = {
 
   card: {
     height: "100%",
-    m: 2,
   } as SxProps<Theme>,
 
   cardContent: {
     height: "100%",
     p: 3,
+  } as SxProps<Theme>,
+
+  stackBox: {
+    width: "auto",
+    alignSelf: "flex-start",
   } as SxProps<Theme>,
 
   radioGroup: {
@@ -61,5 +65,14 @@ export const petitionStyles = {
 
   chooseFileButton: {
     mb: 2,
+    minWidth: "auto",
+    px: 3,
+  } as SxProps<Theme>,
+
+  uploadContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 2,
   } as SxProps<Theme>,
 };
