@@ -1,61 +1,48 @@
 import React from "react";
-import { Box, Typography, Button } from "@mui/material";
-import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
-import { finalEvaluationReportStyles } from "./FinalEvaluationReport.style";
+import { Box } from "@mui/material";
+import Header from "./Header";
+import PetitionerDetails from "./components/PetitionerDetails";
+import IncidentDetails from "./components/IncidentDetails";
+import { finalEvaluationData } from "./data/finalEvaluationData";
 
 interface FinalEvaluationReportProps {
   onBack?: () => void;
+  petitionId?: string;
+  priorityLevel?: "High" | "Medium" | "Low";
 }
 
 const FinalEvaluationReport: React.FC<FinalEvaluationReportProps> = ({
   onBack,
+  petitionId,
+  priorityLevel,
 }) => {
+  // Use provided props or fall back to data from JSON
+  const data = {
+    petitionId: petitionId || finalEvaluationData.petitionDetails.petitionId,
+    priorityLevel:
+      priorityLevel || finalEvaluationData.petitionDetails.priorityLevel,
+    petitionerDetails: finalEvaluationData.petitionerDetails,
+    incidentDetails: finalEvaluationData.incidentDetails,
+  };
+
   return (
-    <Box sx={finalEvaluationReportStyles.container}>
-      <Box
-        sx={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          mb: 2,
-        }}
-      >
-        {onBack && (
-          <Button
-            startIcon={<ArrowBackIcon />}
-            onClick={onBack}
-            variant="outlined"
-            sx={{
-              textTransform: "capitalize",
-              position: "absolute",
-              left: 0,
-              zIndex: 1,
-            }}
-          >
-            Back to Summary
-          </Button>
-        )}
-        <Typography
-          variant="h6"
-          sx={{
-            width: "100%",
-            textAlign: "center",
-            fontWeight: 600,
-            color: "primary.main",
-            fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-            letterSpacing: 0.5,
-          }}
-        >
-          Final Evaluation Report
-        </Typography>
+    <Box
+      sx={{ p: 3, backgroundColor: "background.default", minHeight: "100vh" }}
+    >
+      <Header
+        onBack={onBack}
+        petitionId={data.petitionId}
+        priorityLevel={data.priorityLevel}
+      />
+
+      {/* Petitioner Details Section */}
+      <Box sx={{ mb: 3 }}>
+        <PetitionerDetails petitionerDetails={data.petitionerDetails} />
       </Box>
 
-      {/* Content sections will be added here */}
-      <Box sx={finalEvaluationReportStyles.content}>
-        <Typography variant="body1" color="text.secondary">
-          Final Evaluation Report content will be implemented section by
-          section.
-        </Typography>
+      {/* Incident Details Section */}
+      <Box sx={{ mb: 3 }}>
+        <IncidentDetails incidentDetails={data.incidentDetails} />
       </Box>
     </Box>
   );
