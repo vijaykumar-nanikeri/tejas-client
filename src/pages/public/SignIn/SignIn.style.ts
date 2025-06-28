@@ -125,6 +125,7 @@ export const signInStyles = {
       boxShadow: "0 8px 25px rgba(102, 126, 234, 0.3)",
     },
     transition: "all 0.3s ease",
+    color: "white !important",
   } as SxProps<Theme>,
 
   textField: {

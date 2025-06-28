@@ -3,9 +3,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
-import Security from "@mui/icons-material/Security";
 import { useNavigate } from "react-router-dom";
 import { WebPaths } from "src/routing/routes";
+import logoImage from "images/logo.png";
 
 const pages = [
   { name: "Home", path: WebPaths.Home },
@@ -32,9 +32,20 @@ function TopNavBarLeftSection() {
           sx={{
             mr: 2,
             bgcolor: "rgba(255, 255, 255, 0.2)",
+            width: 40,
+            height: 40,
           }}
         >
-          <Security sx={{ color: "white" }} />
+          <img
+            src={logoImage}
+            alt="TEJAS Logo"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              padding: "4px",
+            }}
+          />
         </Avatar>
         <Typography
           variant="h6"

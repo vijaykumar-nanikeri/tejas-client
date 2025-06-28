@@ -8,6 +8,7 @@ import {
   KeyboardArrowDown as PriorityLowIcon,
   Print as PrintIcon,
 } from "@mui/icons-material";
+import logoImage from "images/logo.png";
 
 interface HeaderProps {
   onBack?: () => void;
@@ -97,19 +98,36 @@ const Header: React.FC<HeaderProps> = ({
         )}
 
         {/* Center - Title */}
-        <Typography
-          variant="h6"
+        <Box
           sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             width: "100%",
-            textAlign: "center",
-            fontWeight: 600,
-            color: "primary.main",
-            fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-            letterSpacing: 0.5,
           }}
         >
-          Final Evaluation Report
-        </Typography>
+          <img
+            src={logoImage}
+            alt="TEJAS Logo"
+            style={{
+              width: "32px",
+              height: "32px",
+              marginRight: "12px",
+              objectFit: "contain",
+            }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              color: "primary.main",
+              fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+              letterSpacing: 0.5,
+            }}
+          >
+            Final Evaluation Report
+          </Typography>
+        </Box>
 
         {/* Right side - Print button */}
         <Button

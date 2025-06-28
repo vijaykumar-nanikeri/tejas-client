@@ -14,16 +14,11 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import {
-  Visibility,
-  VisibilityOff,
-  Phone,
-  Lock,
-  Security,
-} from "@mui/icons-material";
+import { Visibility, VisibilityOff, Phone, Lock } from "@mui/icons-material";
 import AxiosClient from "src/services/AxiosClient/AxiosClient";
 import { AUTH_TOKEN_KEY, USER_DATA_KEY } from "src/app-configs/app.config";
 import { signInStyles } from "./SignIn.style";
+import logoImage from "images/logo.png";
 
 // TypeScript interfaces
 interface SignInFormData {
@@ -163,7 +158,16 @@ const SignIn: React.FC<SignInProps> = ({ setIsAuthenticated }) => {
         <Box sx={signInStyles.leftSection}>
           {/* Tejas Logo */}
           <Box sx={signInStyles.logoContainer}>
-            <Security sx={signInStyles.logo} />
+            <img
+              src={logoImage}
+              alt="Tejas Logo"
+              style={{
+                width: "80px",
+                height: "80px",
+                filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.3))",
+                marginBottom: "16px",
+              }}
+            />
           </Box>
 
           {/* Tagline */}
@@ -287,7 +291,7 @@ const SignIn: React.FC<SignInProps> = ({ setIsAuthenticated }) => {
                         isLoading ? (
                           <CircularProgress size={20} color="inherit" />
                         ) : (
-                          <Security />
+                          <Lock />
                         )
                       }
                       sx={signInStyles.submitButton}
