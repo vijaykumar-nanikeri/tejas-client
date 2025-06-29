@@ -18,7 +18,10 @@ export class FileUploadService {
     return FileUploadService.instance;
   }
 
-  async uploadClaimFiles(claims: ClaimWithFiles[]): Promise<UploadResponse> {
+  async uploadClaimFiles(
+    claims: ClaimWithFiles[],
+    dispatch?: any
+  ): Promise<UploadResponse> {
     try {
       const formData = new FormData();
 
@@ -61,6 +64,18 @@ export class FileUploadService {
 
       console.log("vvv-bulk upload", response.data.message);
 
+      // Store the response.data.message in Redux if dispatch is provided
+      if (dispatch) {
+        const { setEvidenceFileContents } = await import(
+          "../stores/slices/claimsSlice"
+        );
+        dispatch(setEvidenceFileContents(response.data.message));
+        console.log(
+          "Evidence file contents stored in Redux from FileUploadService:",
+          response.data.message
+        );
+      }
+
       return {
         success: true,
         message: response.data.message || "Files uploaded successfully",
@@ -78,7 +93,8 @@ export class FileUploadService {
 
   async uploadSingleClaimFiles(
     claimIndex: number,
-    files: File[]
+    files: File[],
+    dispatch?: any
   ): Promise<UploadResponse> {
     try {
       const formData = new FormData();
@@ -98,6 +114,18 @@ export class FileUploadService {
           },
         }
       );
+
+      // Store the response.data.message in Redux if dispatch is provided
+      if (dispatch) {
+        const { setEvidenceFileContents } = await import(
+          "../stores/slices/claimsSlice"
+        );
+        dispatch(setEvidenceFileContents(response.data.message));
+        console.log(
+          "Single claim evidence file contents stored in Redux from FileUploadService:",
+          response.data.message
+        );
+      }
 
       return {
         success: true,

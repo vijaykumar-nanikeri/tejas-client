@@ -25,6 +25,8 @@ export interface ClaimsState {
   error: string | null;
   isUploading: boolean;
   uploadProgress: number;
+  extractedText: string;
+  evidenceFileContents: string;
 }
 
 const initialState: ClaimsState = {
@@ -33,6 +35,8 @@ const initialState: ClaimsState = {
   error: null,
   isUploading: false,
   uploadProgress: 0,
+  extractedText: "",
+  evidenceFileContents: "",
 };
 
 // Helper function to convert File to FileInfo
@@ -89,6 +93,12 @@ const claimsSlice = createSlice({
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.isLoading = false;
+    },
+    setExtractedText: (state, action: PayloadAction<string>) => {
+      state.extractedText = action.payload;
+    },
+    setEvidenceFileContents: (state, action: PayloadAction<string>) => {
+      state.evidenceFileContents = action.payload;
     },
     // File upload actions
     addFilesToClaim: {
@@ -185,6 +195,8 @@ export const {
   clearClaims,
   setLoading,
   setError,
+  setExtractedText,
+  setEvidenceFileContents,
   addFilesToClaim,
   removeFileFromClaim,
   clearFilesFromClaim,

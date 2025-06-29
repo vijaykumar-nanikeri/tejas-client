@@ -26,7 +26,12 @@ import { petitionStyles } from "../Petition.style";
 import AxiosClient from "src/services/AxiosClient/AxiosClient";
 import { extractJsonFromGptResponse } from "src/utils/helpers/common.helpers";
 import { useAppDispatch } from "src/stores/hooks";
-import { setClaims, setLoading, setError } from "src/stores/slices/claimsSlice";
+import {
+  setClaims,
+  setLoading,
+  setError,
+  setExtractedText,
+} from "src/stores/slices/claimsSlice";
 
 interface FileSelectionFormData {
   fileFormat: string;
@@ -166,6 +171,10 @@ const FileSelection: React.FC<FileSelectionProps> = ({
       };
 
       const response = await AxiosClient.getInstance().post("/ai", requestJson);
+
+      // Store the response.data.message in Redux
+      dispatch(setExtractedText(response.data.message));
+      console.log("AI response stored in Redux:", response.data.message);
 
       const parsed = extractJsonFromGptResponse(response.data.message);
 

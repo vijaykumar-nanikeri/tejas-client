@@ -29,7 +29,7 @@ export default function ClaimGroupCard({
   onShowQualityReview,
 }: ClaimGroupCardProps) {
   const dispatch = useAppDispatch();
-  const { claims, isUploading, uploadProgress } = useAppSelector(
+  const { claims, isUploading, uploadProgress, extractedText } = useAppSelector(
     (state) => state.claims
   );
   const [openDialog, setOpenDialog] = useState(false);
@@ -68,12 +68,21 @@ export default function ClaimGroupCard({
       }, 200);
 
       const uploadService = FileUploadService.getInstance();
-      const result = await uploadService.uploadClaimFiles(claims);
+      const result = await uploadService.uploadClaimFiles(claims, dispatch);
 
       clearInterval(progressInterval);
       dispatch(setUploadProgress(100));
 
       if (result.success) {
+        console.log("Original AI response from Redux:", extractedText);
+        console.log(
+          "Evidence file contents now stored in Redux from FileUploadService"
+        );
+
+        // Now you can combine both texts and call AI API if needed
+        const combinedText = `Original AI Response:\n${extractedText}\n\nEvidence Files Content:\n${result.message}`;
+        console.log("Combined text available for AI analysis:", combinedText);
+
         // Update all claim statuses to uploaded
         claims.forEach((_, index) => {
           if (claims[index].files.length > 0) {
