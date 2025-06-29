@@ -1,17 +1,7 @@
-import React, { useEffect } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import React from "react";
 import { Box } from "@mui/material";
 import ClaimChecklistBoard from "./ClaimChecklistBoard";
 import { useAppSelector } from "src/stores/hooks";
-
-interface EvidenceChecklistFormData {
-  claims: Array<{
-    title: string;
-    checklist: Array<{ label: string; checked: boolean }>;
-    status: string;
-    files: File[];
-  }>;
-}
 
 interface EvidenceChecklistProps {
   onShowQualityReview: () => void;
@@ -21,27 +11,6 @@ const EvidenceChecklist: React.FC<EvidenceChecklistProps> = ({
   onShowQualityReview,
 }) => {
   const { claims, isLoading, error } = useAppSelector((state) => state.claims);
-
-  // Separate form for evidence checklist
-  const evidenceFormMethods = useForm<EvidenceChecklistFormData>({
-    defaultValues: {
-      claims: [],
-    },
-  });
-
-  useEffect(() => {
-    evidenceFormMethods.reset({
-      claims: claims?.map((claim) => ({
-        title: claim?.claimType,
-        checklist: claim?.evidenceChecklist?.map((item: any) => ({
-          label: item,
-          checked: false,
-        })),
-        status: "pending",
-        files: [],
-      })),
-    });
-  }, [claims, evidenceFormMethods]);
 
   if (isLoading) {
     return (
@@ -91,9 +60,7 @@ const EvidenceChecklist: React.FC<EvidenceChecklistProps> = ({
 
   return (
     <Box sx={{ width: "100%" }}>
-      <FormProvider {...evidenceFormMethods}>
-        <ClaimChecklistBoard onShowQualityReview={onShowQualityReview} />
-      </FormProvider>
+      <ClaimChecklistBoard onShowQualityReview={onShowQualityReview} />
     </Box>
   );
 };

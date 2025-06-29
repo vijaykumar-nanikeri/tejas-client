@@ -14,7 +14,7 @@ import PendingIcon from "@mui/icons-material/Pending";
 import WarningIcon from "@mui/icons-material/Warning";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
-import { useFormContext } from "react-hook-form";
+import { useAppSelector } from "src/stores/hooks";
 import ClaimUploadSection from "./ClaimUploadSection";
 
 const statusMap: any = {
@@ -49,11 +49,15 @@ export default function ClaimChecklistCard({
 }: {
   claimIndex: number;
 }) {
-  const { watch } = useFormContext();
-  const claim = watch(`claims.${claimIndex}`);
+  const claims = useAppSelector((state) => state.claims.claims);
+  const claim = claims[claimIndex];
   const status = claim?.status || "pending";
   // @ts-ignore
   const StatusIcon = statusMap[status]?.icon || PendingIcon;
+
+  if (!claim) {
+    return null;
+  }
 
   return (
     <Card
@@ -89,9 +93,9 @@ export default function ClaimChecklistCard({
               mr: 2,
             }}
           >
-            {claim?.title || `Claim ${claimIndex + 1}`}
+            {claim?.claimType || `Claim ${claimIndex + 1}`}
           </Typography>
-          {/* <Box
+          <Box
             sx={{
               display: "flex",
               alignItems: "center",
@@ -118,7 +122,7 @@ export default function ClaimChecklistCard({
             >
               {statusMap[status]?.label || "Pending"}
             </Typography>
-          </Box> */}
+          </Box>
         </Box>
         <Typography
           variant="body2"
@@ -143,33 +147,35 @@ export default function ClaimChecklistCard({
           }}
         >
           <List dense disablePadding>
-            {(claim?.checklist || []).map((item: any, idx: number) => (
-              <ListItem key={idx} disableGutters sx={{ pl: 0, mb: 0.5 }}>
-                <ListItemIcon sx={{ minWidth: 20 }}>
-                  <CircleIcon
-                    fontSize="small"
-                    sx={{
-                      color: "primary.main",
-                      fontSize: "8px",
-                    }}
-                  />
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography
-                      variant="body2"
-                      color="text.primary"
+            {(claim?.evidenceChecklist || []).map(
+              (item: string, idx: number) => (
+                <ListItem key={idx} disableGutters sx={{ pl: 0, mb: 0.5 }}>
+                  <ListItemIcon sx={{ minWidth: 20 }}>
+                    <CircleIcon
+                      fontSize="small"
                       sx={{
-                        fontWeight: 400,
-                        lineHeight: 1.4,
+                        color: "primary.main",
+                        fontSize: "8px",
                       }}
-                    >
-                      {item.label}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            ))}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        variant="body2"
+                        color="text.primary"
+                        sx={{
+                          fontWeight: 400,
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {item}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              )
+            )}
           </List>
         </Box>
       </CardContent>

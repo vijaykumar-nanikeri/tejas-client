@@ -9,9 +9,17 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  LinearProgress,
+  Alert,
 } from "@mui/material";
-import { useFormContext, useFieldArray } from "react-hook-form";
+import { useAppDispatch, useAppSelector } from "src/stores/hooks";
+import {
+  setUploading,
+  setUploadProgress,
+  updateClaimStatus,
+} from "src/stores/slices/claimsSlice";
 import ClaimChecklistCard from "./ClaimChecklistCard";
+import FileUploadService from "src/services/FileUploadService";
 
 interface ClaimGroupCardProps {
   onShowQualityReview: () => void;
@@ -20,27 +28,98 @@ interface ClaimGroupCardProps {
 export default function ClaimGroupCard({
   onShowQualityReview,
 }: ClaimGroupCardProps) {
-  const { control, handleSubmit } = useFormContext();
-  const { fields } = useFieldArray({ control, name: "claims" });
+  const dispatch = useAppDispatch();
+  const { claims, isUploading, uploadProgress } = useAppSelector(
+    (state) => state.claims
+  );
   const [openDialog, setOpenDialog] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleSubmitClick = () => {
+    // Check if any claims have files
+    const claimsWithFiles = claims.filter((claim) => claim.files.length > 0);
+
+    if (claimsWithFiles.length === 0) {
+      setUploadError("Please upload at least one file before submitting.");
+      return;
+    }
+
     setOpenDialog(true);
+    setUploadError(null);
   };
 
-  const handleConfirmSubmit = () => {
+  const handleConfirmSubmit = async () => {
     setOpenDialog(false);
-    // Proceed with the actual submit action
-    handleSubmit((data) => {
-      console.log("Form Data:", data);
-      // Show evidence quality review
-      onShowQualityReview();
-    })();
+    setUploadError(null);
+
+    try {
+      dispatch(setUploading(true));
+      dispatch(setUploadProgress(0));
+
+      // Simulate progress updates
+      let currentProgress = 0;
+      const progressInterval = setInterval(() => {
+        currentProgress += 10;
+        if (currentProgress >= 90) {
+          clearInterval(progressInterval);
+          currentProgress = 90;
+        }
+        dispatch(setUploadProgress(currentProgress));
+      }, 200);
+
+      const uploadService = FileUploadService.getInstance();
+      const result = await uploadService.uploadClaimFiles(claims);
+
+      clearInterval(progressInterval);
+      dispatch(setUploadProgress(100));
+
+      if (result.success) {
+        // Update all claim statuses to uploaded
+        claims.forEach((_, index) => {
+          if (claims[index].files.length > 0) {
+            dispatch(
+              updateClaimStatus({ claimIndex: index, status: "uploaded" })
+            );
+          }
+        });
+
+        // Show success message and proceed to quality review
+        setTimeout(() => {
+          onShowQualityReview();
+        }, 1000);
+      } else {
+        setUploadError(result.message);
+        // Update claim statuses to error
+        claims.forEach((_, index) => {
+          if (claims[index].files.length > 0) {
+            dispatch(updateClaimStatus({ claimIndex: index, status: "error" }));
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      setUploadError("An unexpected error occurred during upload.");
+      // Update claim statuses to error
+      claims.forEach((_, index) => {
+        if (claims[index].files.length > 0) {
+          dispatch(updateClaimStatus({ claimIndex: index, status: "error" }));
+        }
+      });
+    } finally {
+      dispatch(setUploading(false));
+    }
   };
 
   const handleCancelSubmit = () => {
     setOpenDialog(false);
+    setUploadError(null);
   };
+
+  const totalFiles = claims.reduce(
+    (total, claim) => total + claim.files.length,
+    0
+  );
+  const claimsWithFiles = claims.filter((claim) => claim.files.length > 0);
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
@@ -67,14 +146,30 @@ export default function ClaimGroupCard({
         >
           Claims & Checklist - Action Items
         </Typography>
+
+        {uploadError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {uploadError}
+          </Alert>
+        )}
+
+        {isUploading && (
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Uploading files... {uploadProgress}%
+            </Typography>
+            <LinearProgress variant="determinate" value={uploadProgress} />
+          </Box>
+        )}
+
         <Grid container spacing={2}>
-          {fields.map((field, idx) => (
-            // @ts-ignore
-            <Grid item xs={12} md={4} key={field.id}>
+          {claims.map((__, idx) => (
+            <Grid item xs={12} md={4} key={idx}>
               <ClaimChecklistCard claimIndex={idx} />
             </Grid>
           ))}
         </Grid>
+
         <Box sx={{ mt: 3, textAlign: "right" }}>
           <Box
             sx={{
@@ -83,17 +178,31 @@ export default function ClaimGroupCard({
               mb: 2,
             }}
           />
-          <Button
-            onClick={handleSubmitClick}
-            variant="contained"
+          <Box
             sx={{
-              fontWeight: 600,
-              px: 1.5,
-              py: 0.5,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
             }}
           >
-            Submit Claim
-          </Button>
+            <Typography variant="body2" color="text.secondary">
+              Total files: {totalFiles} | Claims with files:{" "}
+              {claimsWithFiles.length}
+            </Typography>
+            <Button
+              onClick={handleSubmitClick}
+              variant="contained"
+              disabled={isUploading || totalFiles === 0}
+              sx={{
+                fontWeight: 600,
+                px: 1.5,
+                py: 0.5,
+              }}
+            >
+              {isUploading ? "Uploading..." : "Submit Claim"}
+            </Button>
+          </Box>
         </Box>
       </Card>
 
@@ -121,32 +230,40 @@ export default function ClaimGroupCard({
           Confirm Evidence Submission
         </DialogTitle>
         <DialogContent sx={{ pt: 3 }}>
-          <Typography variant="body1" color="text.secondary">
-            Are you sure to submit the evidences?
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+            Are you sure you want to submit the evidence files?
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            • Total files to upload: {totalFiles}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            • Claims with files: {claimsWithFiles.length}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 3, pt: 1 }}>
           <Button
             onClick={handleCancelSubmit}
             variant="outlined"
+            disabled={isUploading}
             sx={{
               fontWeight: 500,
               px: 2,
               py: 0.5,
             }}
           >
-            No
+            Cancel
           </Button>
           <Button
             onClick={handleConfirmSubmit}
             variant="contained"
+            disabled={isUploading}
             sx={{
               fontWeight: 600,
               px: 2,
               py: 0.5,
             }}
           >
-            Yes, Submit
+            {isUploading ? "Uploading..." : "Yes, Submit"}
           </Button>
         </DialogActions>
       </Dialog>

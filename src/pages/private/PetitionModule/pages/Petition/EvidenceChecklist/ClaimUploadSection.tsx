@@ -4,69 +4,67 @@ import {
   CloudUpload as CloudUploadIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";
-import { useFormContext, Controller } from "react-hook-form";
+import { useAppDispatch, useAppSelector } from "src/stores/hooks";
+import {
+  addFilesToClaim,
+  removeFileFromClaim,
+} from "src/stores/slices/claimsSlice";
 
 export default function ClaimUploadSection({
   claimIndex,
 }: {
   claimIndex: number;
 }) {
-  const { control, setValue, watch } = useFormContext();
-  const files = watch(`claims.${claimIndex}.files`) || [];
+  const dispatch = useAppDispatch();
+  const claims = useAppSelector((state) => state.claims.claims);
+  const claim = claims[claimIndex];
+  const files = claim?.files || [];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = Array.from(event.target.files || []);
-    const currentFiles = files || [];
-    const updatedFiles = [...currentFiles, ...newFiles];
-    setValue(`claims.${claimIndex}.files`, updatedFiles);
+    if (newFiles.length > 0) {
+      dispatch(addFilesToClaim({ claimIndex, files: newFiles }));
+    }
   };
 
-  const handleRemoveFile = (indexToRemove: number) => {
-    const updatedFiles = files.filter(
-      (_: any, idx: number) => idx !== indexToRemove
-    );
-    setValue(`claims.${claimIndex}.files`, updatedFiles);
+  const handleRemoveFile = (fileIndex: number) => {
+    dispatch(removeFileFromClaim({ claimIndex, fileIndex }));
   };
 
   return (
     <Box sx={{ px: 2, pb: 2, mx: 2, mb: 2 }}>
-      <Controller
-        name={`claims.${claimIndex}.files`}
-        control={control}
-        render={() => (
-          <>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Button
-                component="label"
-                variant="outlined"
-                startIcon={<CloudUploadIcon />}
-              >
-                Choose Files
-                <input
-                  type="file"
-                  multiple
-                  hidden
-                  onChange={handleFileChange}
-                />
-              </Button>
-              <Typography variant="caption" color="text.secondary">
-                {files.length} file(s) selected
-              </Typography>
-            </Stack>
-            <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", mt: 1 }}>
-              {files.map((file: File, idx: number) => (
-                <Chip
-                  key={idx}
-                  label={file.name}
-                  onDelete={() => handleRemoveFile(idx)}
-                  deleteIcon={<DeleteIcon />}
-                  sx={{ mb: 0.5 }}
-                />
-              ))}
-            </Stack>
-          </>
-        )}
-      />
+      <Stack direction="row" spacing={1} alignItems="center">
+        <Button
+          component="label"
+          variant="outlined"
+          startIcon={<CloudUploadIcon />}
+          size="small"
+        >
+          Choose Files
+          <input
+            type="file"
+            multiple
+            hidden
+            onChange={handleFileChange}
+            accept=".pdf,.docx,.doc,.txt,.jpg,.jpeg,.png,.gif"
+          />
+        </Button>
+        <Typography variant="caption" color="text.secondary">
+          {files.length} file(s) selected
+        </Typography>
+      </Stack>
+      <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", mt: 1 }}>
+        {files.map((file: File, idx: number) => (
+          <Chip
+            key={idx}
+            label={file.name}
+            onDelete={() => handleRemoveFile(idx)}
+            deleteIcon={<DeleteIcon />}
+            sx={{ mb: 0.5 }}
+            size="small"
+          />
+        ))}
+      </Stack>
     </Box>
   );
 }
