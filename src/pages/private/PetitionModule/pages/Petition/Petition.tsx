@@ -23,6 +23,10 @@ const Petition: React.FC = () => {
     setCurrentView("quality");
   };
 
+  const handleShowSummary = () => {
+    setCurrentView("summary");
+  };
+
   const handleShowFinalReport = () => {
     setCurrentView("finalReport");
   };
@@ -37,7 +41,7 @@ const Petition: React.FC = () => {
         return (
           <PetitionQuality
             onBack={handleBackToPetition}
-            onProceedToSummary={handleShowFinalReport}
+            onProceedToSummary={handleShowSummary}
           />
         );
       case "summary":

@@ -134,36 +134,6 @@ const PetitionQuality: React.FC<PetitionQualityProps> = ({
 
       <Card sx={petitionQualityStyles.card}>
         <CardContent sx={petitionQualityStyles.cardContent}>
-          {/* Display status of Redux variables */}
-          <Box sx={{ mb: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              <strong>Analysis Status:</strong>
-            </Typography>
-            <Typography
-              variant="body2"
-              color={extractedText ? "success.main" : "error.main"}
-            >
-              • Original AI Response:{" "}
-              {extractedText ? "Available" : "Not Available"}
-            </Typography>
-            <Typography
-              variant="body2"
-              color={evidenceFileContents ? "success.main" : "error.main"}
-            >
-              • Evidence File Contents:{" "}
-              {evidenceFileContents ? "Available" : "Not Available"}
-            </Typography>
-            {extractedText && evidenceFileContents && (
-              <Typography
-                variant="body2"
-                color="success.main"
-                sx={{ mt: 1, fontWeight: "bold" }}
-              >
-                ✓ Combined analysis ready!
-              </Typography>
-            )}
-          </Box>
-
           {claimsData.map((claim, index) => (
             <ClaimSection
               key={claim.claimNo}
