@@ -6,8 +6,16 @@ export interface Claim {
   evidenceChecklist: string[];
 }
 
+export interface FileInfo {
+  name: string;
+  size: number;
+  type: string;
+  lastModified: number;
+}
+
 export interface ClaimWithFiles extends Claim {
   files: File[];
+  fileInfos: FileInfo[];
   status: "pending" | "incomplete" | "uploaded" | "error";
 }
 
@@ -27,6 +35,14 @@ const initialState: ClaimsState = {
   uploadProgress: 0,
 };
 
+// Helper function to convert File to FileInfo
+const fileToFileInfo = (file: File): FileInfo => ({
+  name: file.name,
+  size: file.size,
+  type: file.type,
+  lastModified: file.lastModified,
+});
+
 const claimsSlice = createSlice({
   name: "claims",
   initialState,
@@ -35,6 +51,7 @@ const claimsSlice = createSlice({
       state.claims = action.payload.map((claim) => ({
         ...claim,
         files: [],
+        fileInfos: [],
         status: "pending",
       }));
       state.error = null;
@@ -43,6 +60,7 @@ const claimsSlice = createSlice({
       state.claims.push({
         ...action.payload,
         files: [],
+        fileInfos: [],
         status: "pending",
       });
     },
@@ -73,19 +91,40 @@ const claimsSlice = createSlice({
       state.isLoading = false;
     },
     // File upload actions
-    addFilesToClaim: (
-      state,
-      action: PayloadAction<{ claimIndex: number; files: File[] }>
-    ) => {
-      const { claimIndex, files } = action.payload;
-      if (claimIndex >= 0 && claimIndex < state.claims.length) {
-        state.claims[claimIndex].files = [
-          ...state.claims[claimIndex].files,
-          ...files,
-        ];
-        state.claims[claimIndex].status =
-          state.claims[claimIndex].files.length > 0 ? "incomplete" : "pending";
-      }
+    addFilesToClaim: {
+      reducer: (
+        state,
+        action: PayloadAction<{
+          claimIndex: number;
+          files: File[];
+          fileInfos: FileInfo[];
+        }>
+      ) => {
+        const { claimIndex, files, fileInfos } = action.payload;
+        if (claimIndex >= 0 && claimIndex < state.claims.length) {
+          state.claims[claimIndex].files = [
+            ...state.claims[claimIndex].files,
+            ...files,
+          ];
+          state.claims[claimIndex].fileInfos = [
+            ...state.claims[claimIndex].fileInfos,
+            ...fileInfos,
+          ];
+          state.claims[claimIndex].status =
+            state.claims[claimIndex].files.length > 0
+              ? "incomplete"
+              : "pending";
+        }
+      },
+      prepare: (payload: { claimIndex: number; files: File[] }) => {
+        const fileInfos = payload.files.map(fileToFileInfo);
+        return {
+          payload: {
+            ...payload,
+            fileInfos,
+          },
+        };
+      },
     },
     removeFileFromClaim: (
       state,
@@ -94,6 +133,7 @@ const claimsSlice = createSlice({
       const { claimIndex, fileIndex } = action.payload;
       if (claimIndex >= 0 && claimIndex < state.claims.length) {
         state.claims[claimIndex].files.splice(fileIndex, 1);
+        state.claims[claimIndex].fileInfos.splice(fileIndex, 1);
         state.claims[claimIndex].status =
           state.claims[claimIndex].files.length > 0 ? "incomplete" : "pending";
       }
@@ -102,6 +142,7 @@ const claimsSlice = createSlice({
       const claimIndex = action.payload;
       if (claimIndex >= 0 && claimIndex < state.claims.length) {
         state.claims[claimIndex].files = [];
+        state.claims[claimIndex].fileInfos = [];
         state.claims[claimIndex].status = "pending";
       }
     },

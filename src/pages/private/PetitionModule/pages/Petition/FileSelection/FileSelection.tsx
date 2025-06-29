@@ -173,7 +173,6 @@ const FileSelection: React.FC<FileSelectionProps> = ({
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("File selection submitted:", data);
       // Handle success - could trigger evidence checklist generation
     } catch (error) {
       console.error("Error submitting file selection:", error);
