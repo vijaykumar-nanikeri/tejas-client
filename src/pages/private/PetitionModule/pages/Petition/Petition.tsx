@@ -10,7 +10,6 @@ type PetitionView = "form" | "quality" | "summary" | "finalReport";
 
 const Petition: React.FC = () => {
   const [currentView, setCurrentView] = useState<PetitionView>("form");
-  const [claims, setClaims] = useState<any[]>([]);
 
   const handleShowQualityReview = () => {
     setCurrentView("quality");
@@ -53,11 +52,8 @@ const Petition: React.FC = () => {
       default:
         return (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <FileSelection setClaims={setClaims} />
-            <EvidenceChecklist
-              onShowQualityReview={handleShowQualityReview}
-              claims={claims}
-            />
+            <FileSelection />
+            <EvidenceChecklist onShowQualityReview={handleShowQualityReview} />
           </Box>
         );
     }

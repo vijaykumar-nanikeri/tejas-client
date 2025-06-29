@@ -2,6 +2,10 @@ import React from "react";
 
 // Packages
 import { ToastContainer } from "react-toastify";
+import { Provider } from "react-redux";
+
+// Store
+import { store } from "./stores";
 
 // Styles
 import "react-toastify/dist/ReactToastify.css";
@@ -12,7 +16,7 @@ type Props = {
 
 const AppProviders = ({ children }: Props) => {
   return (
-    <>
+    <Provider store={store}>
       {/* Global components - STARTS >> */}
       <ToastContainer
         closeOnClick
@@ -25,7 +29,7 @@ const AppProviders = ({ children }: Props) => {
       />
       {/* << ENDS - Global components */}
       {children}
-    </>
+    </Provider>
   );
 };
 

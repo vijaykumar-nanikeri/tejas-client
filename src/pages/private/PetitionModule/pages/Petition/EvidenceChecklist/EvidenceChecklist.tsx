@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Box } from "@mui/material";
 import ClaimChecklistBoard from "./ClaimChecklistBoard";
+import { useAppSelector } from "src/stores/hooks";
 
 interface EvidenceChecklistFormData {
   claims: Array<{
@@ -14,13 +15,13 @@ interface EvidenceChecklistFormData {
 
 interface EvidenceChecklistProps {
   onShowQualityReview: () => void;
-  claims: any[];
 }
 
 const EvidenceChecklist: React.FC<EvidenceChecklistProps> = ({
   onShowQualityReview,
-  claims,
 }) => {
+  const { claims, isLoading, error } = useAppSelector((state) => state.claims);
+
   // Separate form for evidence checklist
   const evidenceFormMethods = useForm<EvidenceChecklistFormData>({
     defaultValues: {
@@ -41,6 +42,52 @@ const EvidenceChecklist: React.FC<EvidenceChecklistProps> = ({
       })),
     });
   }, [claims, evidenceFormMethods]);
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "200px",
+        }}
+      >
+        Loading claims...
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "200px",
+          color: "error.main",
+        }}
+      >
+        {error}
+      </Box>
+    );
+  }
+
+  if (!claims || claims.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "200px",
+        }}
+      >
+        No claims found. Please upload a file first.
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ width: "100%" }}>
