@@ -24,6 +24,7 @@ import {
 } from "@mui/icons-material";
 import { petitionStyles } from "../Petition.style";
 import AxiosClient from "src/services/AxiosClient/AxiosClient";
+import { extractJsonFromGptResponse } from "src/utils/helpers/common.helpers";
 
 interface FileSelectionFormData {
   fileFormat: string;
@@ -34,11 +35,13 @@ interface FileSelectionFormData {
 interface FileSelectionProps {
   onBack?: () => void;
   onFileSelected?: (file: File) => void;
+  setClaims?: (claims: any[]) => void;
 }
 
 const FileSelection: React.FC<FileSelectionProps> = ({
   onBack,
   onFileSelected,
+  setClaims,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -151,6 +154,19 @@ const FileSelection: React.FC<FileSelectionProps> = ({
   const onSubmit = async (data: FileSelectionFormData) => {
     setIsSubmitting(true);
     try {
+      const promptMessage =
+        "You are a legal assistant working with the Andhra Pradesh Police. Given a citizen complaint, extract and organize all information required to generate a formal petition evaluation report.\n\nYour responsibilities are:\n\n### 1. Extract and Classify Claims\n- Identify all valid legal claims from the complaint text.\n- Prioritize classification using the following official categories:\n  - Dowry\n  - Harassment\n  - Robbery\n  - Attempt to Murder\n  - Encroachment\n- If a claim does not match any of these, classify it as: `Other: [custom type]`\n\nFor each claim, return:\n- `claim`: A short, clear description of the claim\n- `claimType`: One of the 5 above or `Other: [label]`\n- `evidenceChecklist`: A list of relevant evidence types based on the nature of the claim\n\n### 2. Extract Case Details (for Report Generation)\nFrom the complaint text or context, extract:\n- `petitionerDetails`: name, fatherName (if available), address, phoneNo\n- `victimDetails` (if different)\n- `accusedDetails`: array of accused persons with name, fatherName or husbandName, and address\n- `dateAndPlaceOfIncident`: date, time (if known), and location\n- `briefFactsSummary`: 1–2 sentence factual summary of the incident\n\nReturn the full response in **structured JSON format** using camelCase keys only. If any information is missing or not available in the text, leave it as `null` or an empty string. Do not include commentary or explanation.";
+      const requestJson = {
+        promptMessage,
+        inputText: "Complaint text:\n" + data.description,
+      };
+
+      const response = await AxiosClient.getInstance().post("/ai", requestJson);
+
+      const parsed = extractJsonFromGptResponse(response.data.message);
+
+      setClaims(parsed?.claims || parsed?.extractedClaims || []);
+
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
       console.log("File selection submitted:", data);

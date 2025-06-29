@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Box } from "@mui/material";
 import ClaimChecklistBoard from "./ClaimChecklistBoard";
@@ -14,38 +14,33 @@ interface EvidenceChecklistFormData {
 
 interface EvidenceChecklistProps {
   onShowQualityReview: () => void;
+  claims: any[];
 }
 
 const EvidenceChecklist: React.FC<EvidenceChecklistProps> = ({
   onShowQualityReview,
+  claims,
 }) => {
   // Separate form for evidence checklist
   const evidenceFormMethods = useForm<EvidenceChecklistFormData>({
     defaultValues: {
-      claims: [
-        {
-          title: "Harassment",
-          checklist: [
-            { label: "Medical Certificate", checked: false },
-            { label: "Call Logs", checked: false },
-            { label: "Complaint Statement", checked: false },
-          ],
-          status: "pending",
-          files: [],
-        },
-        {
-          title: "Encroachment",
-          checklist: [
-            { label: "Land Title Document", checked: true },
-            { label: "Survey Report", checked: false },
-            { label: "Panchayat Letter", checked: false },
-          ],
-          status: "incomplete",
-          files: [],
-        },
-      ],
+      claims: [],
     },
   });
+
+  useEffect(() => {
+    evidenceFormMethods.reset({
+      claims: claims?.map((claim) => ({
+        title: claim?.claimType,
+        checklist: claim?.evidenceChecklist?.map((item: any) => ({
+          label: item,
+          checked: false,
+        })),
+        status: "pending",
+        files: [],
+      })),
+    });
+  }, [claims, evidenceFormMethods]);
 
   return (
     <Box sx={{ width: "100%" }}>

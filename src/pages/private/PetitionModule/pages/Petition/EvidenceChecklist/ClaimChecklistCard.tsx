@@ -52,6 +52,7 @@ export default function ClaimChecklistCard({
   const { watch } = useFormContext();
   const claim = watch(`claims.${claimIndex}`);
   const status = claim?.status || "pending";
+  // @ts-ignore
   const StatusIcon = statusMap[status]?.icon || PendingIcon;
 
   return (
@@ -90,7 +91,7 @@ export default function ClaimChecklistCard({
           >
             {claim?.title || `Claim ${claimIndex + 1}`}
           </Typography>
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               alignItems: "center",
@@ -117,7 +118,7 @@ export default function ClaimChecklistCard({
             >
               {statusMap[status]?.label || "Pending"}
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
         <Typography
           variant="body2"
