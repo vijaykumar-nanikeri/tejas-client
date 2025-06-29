@@ -62,8 +62,6 @@ export class FileUploadService {
         }
       );
 
-      console.log("vvv-bulk upload", response.data.message);
-
       // Store the response.data.message in Redux if dispatch is provided
       if (dispatch) {
         const { setEvidenceFileContents } = await import(

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
@@ -7,9 +7,10 @@ import {
 import { useAppSelector } from "src/stores/hooks";
 import ClaimSection from "./components/ClaimSection";
 import { petitionQualityStyles } from "./PetitionQuality.style";
-import { claimsData } from "./data/claimsData";
+// import { claimsData } from "./data/claimsData";
 import AxiosClient from "src/services/AxiosClient/AxiosClient";
 import { extractJsonFromGptResponse } from "utils/helpers/common.helpers";
+import { ClaimData, EvidenceData } from "./data/claimsData";
 
 interface PetitionQualityProps {
   onBack?: () => void;
@@ -24,10 +25,12 @@ const PetitionQuality: React.FC<PetitionQualityProps> = ({
     (state) => state.claims
   );
 
+  const [claimsData, setClaimsData] = useState<ClaimData[]>([]);
+
   // Method to execute when both extractedText and evidenceFileContents are non-empty
   const executeCombinedAnalysis = async () => {
     const promptMessage =
-      "You are a legal assistant working with the Andhra Pradesh Police. Your task is to evaluate the quality of evidence submitted for each expected item in a legal case.\n\nYou will receive:\n1. An `evidenceChecklist` – the expected list of evidence items for the claim\n2. A list of `submittedEvidence` – actual evidence descriptions or extracted content\n\nFor each expected evidence item:\n- Determine whether it is available in submittedEvidence (by fuzzy or semantic match)\n- If found, evaluate its quality as one of:\n - 'Good': Clear, complete, and directly relevant\n - 'Moderate': Partially relevant, incomplete, or slightly unclear\n - 'Bad': Unclear, irrelevant, or missing details\n\nReturn your response as a JSON object with the following keys:\n\n1. `evidenceChecklistAnalysis`: an array of objects, each including:\n  - `evidenceItem`\n  - `isAvailable`: true or false\n  - `quality`: 'Good', 'Moderate', or 'Bad'\n  - `remarks`: brief justification\n  - `source`: matching submitted evidence snippet or null\n\n2. `missingEvidence`: a list of evidence items from the checklist that were not found in the submitted evidence\n\nRespond strictly in JSON format with camelCase keys only. Do not include any explanations outside the JSON structure.";
+      "You are a legal assistant working with the Andhra Pradesh Police. Your task is to evaluate the quality of evidence submitted for each expected item in a legal case, separately for each legal claim.\n\nYou will receive:\n1. A list of claims. For each claim:\n  - `claimType`: the legal classification (e.g., Robbery, Harassment, Dowry, etc.)\n  - `evidenceChecklist`: the expected list of evidence items relevant to that claim\n2. A list of `submittedEvidence`: actual evidence descriptions or extracted content\n\nFor each claimType and its checklist:\n- Go through each evidence item\n- Check whether it's available in `submittedEvidence` (by fuzzy or semantic match)\n- If found, evaluate its quality as one of:\n - 'Good': Clear, complete, and directly relevant to the claimType\n - 'Moderate': Partially relevant, incomplete, or somewhat unclear\n - 'Bad': Unclear, irrelevant, or missing details\n\nReturn your response in **strict JSON format** with camelCase keys. The structure must be:\n\n1. `evidenceChecklistAnalysis`: an array of objects where each object includes:\n  - `claimType`\n  - `evidenceItem`\n  - `isAvailable`: true or false\n  - `quality`: 'Good', 'Moderate', or 'Bad'\n  - `remarks`: short explanation\n  - `source`: matching snippet from submittedEvidence or null\n\n2. `missingEvidence`: an array of objects, each including:\n  - `claimType`\n  - `evidenceItem`: expected but not found in submitted evidence\n\nDo not include any explanation or commentary outside the JSON structure. Output must only contain the JSON object with camelCase keys.";
     const requestJson = {
       promptMessage,
       inputText:
@@ -35,8 +38,50 @@ const PetitionQuality: React.FC<PetitionQualityProps> = ({
     };
 
     const response = await AxiosClient.getInstance().post("/ai", requestJson);
-    const parsed = extractJsonFromGptResponse(response.data.message);
-    console.log("vvv-somedata:", parsed);
+    const parsed: any = extractJsonFromGptResponse(response.data.message);
+    console.log("vvv-parsed: ", parsed);
+    const evidenceChecklistAnalysis = parsed?.evidenceChecklistAnalysis;
+
+    // Map the API response to the ClaimData structure
+    const mappedClaimsData: ClaimData[] = [];
+
+    if (evidenceChecklistAnalysis && Array.isArray(evidenceChecklistAnalysis)) {
+      // Group by claimType
+      const groupedByClaimType = evidenceChecklistAnalysis.reduce(
+        (acc: any, item: any) => {
+          if (!acc[item.claimType]) {
+            acc[item.claimType] = [];
+          }
+          acc[item.claimType].push(item);
+          return acc;
+        },
+        {}
+      );
+
+      // Convert to ClaimData structure
+      Object.keys(groupedByClaimType).forEach((claimType, index) => {
+        const evidenceItems = groupedByClaimType[claimType];
+
+        const evidences: EvidenceData[] = evidenceItems.map((item: any) => ({
+          document: item.evidenceItem,
+          quality: item.quality.toLowerCase() as "good" | "bad",
+          aiFeedback: item.remarks,
+        }));
+
+        const hasMissingDocuments = evidenceItems.some(
+          (item: any) => !item.isAvailable
+        );
+
+        mappedClaimsData.push({
+          claimNo: (index + 1).toString().padStart(3, "0"), // Generate claim numbers like "001", "002"
+          claimName: claimType,
+          evidences,
+          hasMissingDocuments,
+        });
+      });
+    }
+
+    setClaimsData(mappedClaimsData);
   };
 
   // useEffect to check when both variables are non-empty
